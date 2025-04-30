@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/nav_graph.xml">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/nav_graph"
+             app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.teleflow.fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_scriptSelectionFragment"
+            app:destination="@id/scriptSelectionFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scriptSelectionFragment"
+        android:name="com.example.teleflow.fragments.ScriptSelectionFragment"
+        android:label="fragment_script_selection"
+        tools:layout="@layout/fragment_script_selection">
+        <action
+            android:id="@+id/action_scriptSelectionFragment_to_recordingFragment"
+            app:destination="@id/recordingFragment" />
+        <action
+            android:id="@+id/action_scriptSelectionFragment_to_scriptEditorFragment"
+            app:destination="@id/scriptEditorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recordingFragment"
+        android:name="com.example.teleflow.fragments.RecordingFragment"
+        android:label="fragment_recording"
+        tools:layout="@layout/fragment_recording">
+        <action
+            android:id="@+id/action_recordingFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <argument
+            android:name="scriptTitle"
+            app:argType="string" />
+        <argument
+            android:name="scriptContent"
+            app:argType="string" />
+        <argument
+            android:name="scriptId"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.example.teleflow.fragments.VideoPlayerFragment"
+        android:label="fragment_video_player"
+        tools:layout="@layout/fragment_video_player">
+        <argument
+            android:name="recordingId"
+            app:argType="integer" />
+        <argument
+            android:name="videoUri"
+            app:argType="string" />
+        <argument
+            android:name="scriptId"
+            app:argType="integer" />
+        <argument
+            android:name="date"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scriptEditorFragment"
+        android:name="com.example.teleflow.fragments.ScriptEditorFragment"
+        android:label="fragment_script_editor"
+        tools:layout="@layout/fragment_script_editor">
+        <argument
+            android:name="scriptId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
 </navigation>

@@ -11,7 +11,7 @@ import com.example.teleflow.models.Script
 class ScriptAdapter(
     private val scripts: MutableList<Script>,
     private val onItemClick: (Script) -> Unit,
-    private val onItemLongClick: ((Script) -> Unit)? = null
+    private val onItemLongClick: ((Script, View) -> Unit)? = null
 ) : RecyclerView.Adapter<ScriptAdapter.ScriptViewHolder>() {
 
     class ScriptViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,8 +44,8 @@ class ScriptAdapter(
         
         // Set up long-click listener if provided
         onItemLongClick?.let { longClickHandler ->
-            holder.itemView.setOnLongClickListener {
-                longClickHandler(script)
+            holder.itemView.setOnLongClickListener { view ->
+                longClickHandler(script, view)
                 true // Return true to indicate the long press was handled
             }
         }

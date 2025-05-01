@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_videoPlayerFragment"
             app:destination="@id/videoPlayerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_scriptEditorFragment"
+            app:destination="@id/scriptEditorFragment" />
     </fragment>
 
     <fragment

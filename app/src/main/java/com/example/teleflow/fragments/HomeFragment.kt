@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -67,7 +68,10 @@ class HomeFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             },
-            onItemLongClick = null
+            onItemLongClick = { script, view ->
+                // Show popup menu with edit and delete options
+                showScriptOptionsMenu(view, script)
+            }
         )
         scriptsRecyclerView.adapter = scriptAdapter
 
@@ -99,6 +103,46 @@ class HomeFragment : Fragment() {
             // Update the adapter with the latest recordings
             recordingAdapter.updateData(recordings)
         })
+    }
+    
+    private fun showScriptOptionsMenu(view: View, script: Script) {
+        val popup = PopupMenu(requireContext(), view)
+        
+        popup.menuInflater.inflate(R.menu.menu_script_options, popup.menu)
+        
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_edit -> {
+                    // Navigate to script editor for editing
+                    val bundle = Bundle().apply {
+                        putInt("scriptId", script.id)
+                    }
+                    findNavController().navigate(R.id.action_homeFragment_to_scriptEditorFragment, bundle)
+                    true
+                }
+                R.id.action_delete -> {
+                    // Show confirmation dialog before deleting
+                    showDeleteConfirmationDialog(script)
+                    true
+                }
+                else -> false
+            }
+        }
+        
+        popup.show()
+    }
+    
+    private fun showDeleteConfirmationDialog(script: Script) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Script")
+            .setMessage("Are you sure you want to delete '${script.title}'? This action cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
+                // Delete the script
+                scriptViewModel.deleteScript(script)
+                Toast.makeText(requireContext(), "Script deleted", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     
     private fun showPlaybackOptions(recording: Recording) {

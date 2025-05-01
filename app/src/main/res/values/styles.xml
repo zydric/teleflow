@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Style for the bottom navigation -->
+    <style name="BottomNavigationStyle">
+        <item name="android:background">@color/bottom_nav_color</item>
+        <item name="itemIconTint">@color/white</item>
+        <item name="itemTextColor">@color/white</item>
+    </style>
+</resources> 

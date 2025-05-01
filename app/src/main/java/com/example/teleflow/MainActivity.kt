@@ -1,39 +1,166 @@
 package com.example.teleflow
 
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
+        // Set up DrawerLayout
+        drawerLayout = findViewById(R.id.drawer_layout)
+        
+        // Set up NavigationView
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
         
         // Properly set up NavController using NavHostFragment
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         
         // Set up bottom navigation
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        
+        // Define the top-level destinations (these won't have a back button in the app bar)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.homeFragment,
+                R.id.scriptsFragment,
+                R.id.profileFragment
+            ),
+            drawerLayout
+        )
+        
+        // Set up ActionBar with NavController
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        
+        // Create ActionBarDrawerToggle for the hamburger icon
+        toggle = ActionBarDrawerToggle(
+            this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        
+        // Enable hamburger menu
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        
+        // Listen for destination changes to set custom titles
+        navController.addOnDestinationChangedListener(this)
+        
+        // Set up bottom navigation with basic configuration
         bottomNavigationView.setupWithNavController(navController)
         
-        // Handle reselection to reset to root behavior
-        bottomNavigationView.setOnItemReselectedListener { item ->
-            val currentDestinationId = navController.currentDestination?.id
-            if (currentDestinationId == item.itemId) {
-                // If we're already at the selected destination, pop back to it as the start destination
-                navController.popBackStack(item.itemId, false)
+        // Add a manual listener to ensure navigation works from any destination
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    // Navigate to home fragment
+                    navController.navigate(R.id.homeFragment)
+                    true
+                }
+                R.id.scriptsFragment -> {
+                    // Navigate to scripts fragment
+                    navController.navigate(R.id.scriptsFragment)
+                    true
+                }
+                R.id.profileFragment -> {
+                    // Navigate to profile fragment
+                    navController.navigate(R.id.profileFragment)
+                    true
+                }
+                else -> false
             }
         }
     }
     
+    override fun onDestinationChanged(
+        controller: NavController,
+        destination: NavDestination,
+        arguments: Bundle?
+    ) {
+        // Set custom title based on the current destination
+        when (destination.id) {
+            R.id.homeFragment -> supportActionBar?.title = "TeleFlow"
+            R.id.scriptsFragment -> supportActionBar?.title = "My Scripts"
+            R.id.profileFragment -> supportActionBar?.title = "My Profile"
+            R.id.recordingsFragment -> supportActionBar?.title = "My Recordings"
+            R.id.recordFragment -> supportActionBar?.title = "Record Video"
+            R.id.videoPlayerFragment -> supportActionBar?.title = "Video Player"
+            R.id.settingsFragment -> supportActionBar?.title = "Settings"
+            R.id.scriptEditorFragment -> {
+                val isEditing = arguments?.getInt("scriptId", -1) != -1
+                supportActionBar?.title = if (isEditing) "Edit Script" else "New Script"
+            }
+        }
+    }
+    
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation drawer item clicks
+        when (item.itemId) {
+            R.id.nav_recordings -> {
+                // Navigate to recordings fragment
+                navController.navigate(R.id.recordingsFragment)
+            }
+            R.id.nav_settings -> {
+                // Navigate to settings fragment
+                navController.navigate(R.id.settingsFragment)
+            }
+            R.id.nav_about -> {
+                // Handle about click
+                // For now, just close the drawer
+            }
+        }
+        
+        // Close the drawer
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+    
+    override fun onBackPressed() {
+        // Close drawer if open, otherwise handle normal back button press
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        // Remove the destination changed listener
+        navController.removeOnDestinationChangedListener(this)
     }
 }

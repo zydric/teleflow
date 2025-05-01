@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- New custom colors - replace with your preferred colors -->
+    <color name="primary">#FF000000</color> <!-- For ActionBar -->
+    <color name="primary_dark">#FF000000</color> <!-- Status bar color -->
+    <color name="accent">#FFCC00</color> <!-- Accents like selected items -->
+    <color name="bottom_nav_color">#FF000000</color> <!-- Color for bottom navigation -->
 </resources>

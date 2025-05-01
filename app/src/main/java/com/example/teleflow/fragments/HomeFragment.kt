@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
                     putInt("scriptId", script.id)
                 }
                 // Navigate directly to the recording fragment with the selected script
-                findNavController().navigate(R.id.recordingFragment, bundle)
+                findNavController().navigate(R.id.recordFragment, bundle)
                 
                 // Show a toast confirming the selection
                 Toast.makeText(
@@ -80,15 +80,27 @@ class HomeFragment : Fragment() {
         recordingsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         
         // Create recording adapter with empty list (will be populated from ViewModel)
-        recordingAdapter = RecordingAdapter(mutableListOf()) { recording ->
-            showPlaybackOptions(recording)
-        }
+        recordingAdapter = RecordingAdapter(
+            mutableListOf(),
+            onItemClick = { recording ->
+                // Play the recording directly
+                playInApp(recording)
+            },
+            onItemLongClick = { recording, view ->
+                // Show popup menu with play and delete options
+                showRecordingOptionsMenu(view, recording)
+            },
+            getScript = { scriptId -> 
+                scriptViewModel.getScriptById(scriptId)
+            },
+            lifecycleOwner = viewLifecycleOwner
+        )
         recordingsRecyclerView.adapter = recordingAdapter
 
         // Set up navigation to script selection when "Record New Video" button is clicked
         val recordNewButton = view.findViewById<Button>(R.id.button_recordNew)
         recordNewButton.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_scriptSelectionFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_scriptsFragment)
         }
         
         // Observe the scripts from ViewModel
@@ -132,6 +144,29 @@ class HomeFragment : Fragment() {
         popup.show()
     }
     
+    private fun showRecordingOptionsMenu(view: View, recording: Recording) {
+        val popup = PopupMenu(requireContext(), view)
+        
+        popup.menuInflater.inflate(R.menu.menu_recording_options, popup.menu)
+        
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_play -> {
+                    playInApp(recording)
+                    true
+                }
+                R.id.action_delete -> {
+                    // Show confirmation dialog before deleting
+                    showDeleteRecordingConfirmationDialog(recording)
+                    true
+                }
+                else -> false
+            }
+        }
+        
+        popup.show()
+    }
+    
     private fun showDeleteConfirmationDialog(script: Script) {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete Script")
@@ -145,16 +180,20 @@ class HomeFragment : Fragment() {
             .show()
     }
     
-    private fun showPlaybackOptions(recording: Recording) {
-        // Use the script ViewModel to get the script details
+    private fun showDeleteRecordingConfirmationDialog(recording: Recording) {
+        // Get script information to show in dialog
         scriptViewModel.getScriptById(recording.scriptId).observe(viewLifecycleOwner, Observer { script ->
             val scriptTitle = script?.title ?: "Unknown Script"
             
             AlertDialog.Builder(requireContext())
-                .setTitle("Play \"$scriptTitle\"")
-                .setPositiveButton("Play in App") { _, _ ->
-                    playInApp(recording)
+                .setTitle("Delete Recording")
+                .setMessage("Are you sure you want to delete this recording of \"$scriptTitle\"? The recording will be removed from the app but will remain in your device storage.")
+                .setPositiveButton("Delete") { _, _ ->
+                    // Delete the recording from the database
+                    recordingViewModel.deleteRecording(recording)
+                    Toast.makeText(requireContext(), "Recording deleted", Toast.LENGTH_SHORT).show()
                 }
+                .setNegativeButton("Cancel", null)
                 .show()
         })
     }

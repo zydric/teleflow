@@ -19,7 +19,7 @@ import com.example.teleflow.adapters.ScriptAdapter
 import com.example.teleflow.viewmodels.ScriptViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ScriptSelectionFragment : Fragment() {
+class ScriptsFragment : Fragment() {
 
     private lateinit var scriptsRecyclerView: RecyclerView
     private lateinit var addScriptFab: FloatingActionButton
@@ -30,7 +30,7 @@ class ScriptSelectionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_script_selection, container, false)
+        return inflater.inflate(R.layout.fragment_scripts, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +57,7 @@ class ScriptSelectionFragment : Fragment() {
                     "scriptId" to script.id
                 )
                 findNavController().navigate(
-                    R.id.action_scriptSelectionFragment_to_recordingFragment,
+                    R.id.action_scriptsFragment_to_recordFragment,
                     bundle
                 )
             },
@@ -87,7 +87,7 @@ class ScriptSelectionFragment : Fragment() {
                     // Navigate to script editor for editing
                     val bundle = bundleOf("scriptId" to script.id)
                     findNavController().navigate(
-                        R.id.action_scriptSelectionFragment_to_scriptEditorFragment,
+                        R.id.action_scriptsFragment_to_scriptEditorFragment,
                         bundle
                     )
                     true
@@ -119,6 +119,6 @@ class ScriptSelectionFragment : Fragment() {
     
     private fun navigateToScriptEditor() {
         // Navigate to script editor for creating a new script
-        findNavController().navigate(R.id.action_scriptSelectionFragment_to_scriptEditorFragment)
+        findNavController().navigate(R.id.action_scriptsFragment_to_scriptEditorFragment)
     }
 } 

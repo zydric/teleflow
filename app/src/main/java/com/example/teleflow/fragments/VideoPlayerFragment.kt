@@ -1,5 +1,6 @@
 package com.example.teleflow.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
+import com.example.teleflow.models.Recording
 import com.example.teleflow.viewmodels.ScriptViewModel
 import com.example.teleflow.viewmodels.RecordingViewModel
 import java.text.SimpleDateFormat
@@ -26,6 +28,7 @@ class VideoPlayerFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var scriptInfoText: TextView
     private lateinit var backButton: ImageButton
+    private lateinit var deleteButton: ImageButton
     
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val recordingViewModel: RecordingViewModel by viewModels()
@@ -60,10 +63,16 @@ class VideoPlayerFragment : Fragment() {
         progressBar = view.findViewById(R.id.progressBar)
         scriptInfoText = view.findViewById(R.id.textView_scriptInfo)
         backButton = view.findViewById(R.id.button_back)
+        deleteButton = view.findViewById(R.id.button_delete)
         
         // Set up back button
         backButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+        
+        // Set up delete button
+        deleteButton.setOnClickListener {
+            showDeleteConfirmationDialog()
         }
         
         // Display script info using ViewModel
@@ -77,11 +86,41 @@ class VideoPlayerFragment : Fragment() {
         scriptViewModel.getScriptById(scriptId).observe(viewLifecycleOwner, Observer { script ->
             val scriptTitle = script?.title ?: "Unknown Script"
             
-            val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
             val formattedDate = dateFormat.format(Date(date))
             
             scriptInfoText.text = "$scriptTitle - $formattedDate"
         })
+    }
+    
+    private fun showDeleteConfirmationDialog() {
+        // Get script information to show in dialog
+        scriptViewModel.getScriptById(scriptId).observe(viewLifecycleOwner, Observer { script ->
+            val scriptTitle = script?.title ?: "Unknown Script"
+            
+            AlertDialog.Builder(requireContext())
+                .setTitle("Delete Recording")
+                .setMessage("Are you sure you want to delete this recording of \"$scriptTitle\"? The recording will be removed from the app but will remain in your device storage.")
+                .setPositiveButton("Delete") { _, _ ->
+                    // Delete the recording from the database
+                    if (recordingId != -1) {
+                        recordingViewModel.getRecordingById(recordingId).observe(viewLifecycleOwner, Observer { recording ->
+                            recording?.let {
+                                deleteRecording(it)
+                            }
+                        })
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        })
+    }
+    
+    private fun deleteRecording(recording: Recording) {
+        recordingViewModel.deleteRecording(recording)
+        Toast.makeText(requireContext(), "Recording deleted", Toast.LENGTH_SHORT).show()
+        // Navigate back to home screen after deleting
+        findNavController().popBackStack()
     }
     
     private fun setupVideoPlayback() {

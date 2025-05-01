@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="Home 🏠" />
+    <item
+        android:id="@+id/scriptsFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Scripts 📜" />
+    <item
+        android:id="@+id/recordingsFragment"
+        android:icon="@android:drawable/ic_menu_slideshow"
+        android:title="Recordings 🎞️" />
+</menu> 

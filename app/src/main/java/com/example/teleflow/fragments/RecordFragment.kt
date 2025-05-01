@@ -39,9 +39,9 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class RecordingFragment : Fragment() {
+class RecordFragment : Fragment() {
 
-    private val TAG = "RecordingFragment"
+    private val TAG = "RecordFragment"
     
     // Script data
     private var scriptTitle: String = "Untitled Script"
@@ -89,7 +89,7 @@ class RecordingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recording, container, false)
+        return inflater.inflate(R.layout.fragment_record, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -261,7 +261,7 @@ class RecordingFragment : Fragment() {
                                 ).show()
                                 
                                 // Return to home fragment
-                                findNavController().navigate(R.id.action_recordingFragment_to_homeFragment)
+                                findNavController().navigate(R.id.action_recordFragment_to_homeFragment)
                             })
                         } else {
                             // Recording failed

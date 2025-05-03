@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.RecordFragment">
 
+    <!-- Full-screen camera preview -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="0dp"
@@ -15,40 +16,199 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Toolbar at the top -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#80000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Record"
+        app:titleTextColor="@color/heading_color" />
+
+    <!-- Recording timer -->
+    <TextView
+        android:id="@+id/textView_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#80000000"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="00:00"
+        android:textColor="@color/heading_color"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <!-- Script overlay with a semi-transparent background -->
+    <ScrollView
+        android:id="@+id/scrollView_script"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="#80000000"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_record"
+        app:layout_constraintEnd_toStartOf="@+id/layout_controls"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <TextView
+            android:id="@+id/textView_scriptOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/heading_color"
+            android:textSize="16sp"
+            tools:text="Script content will appear here..." />
+    </ScrollView>
+
+    <!-- Control panel on the right side -->
+    <LinearLayout
+        android:id="@+id/layout_controls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/control_panel_background"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_record"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <!-- Opacity Control -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Opacity"
+            android:textColor="@color/heading_color"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/slider_opacity"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:max="100"
+            android:progress="50"
+            android:progressTint="@color/text_color"
+            android:thumb="@drawable/slider_thumb" />
+
+        <!-- Font Size Control -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Font Size"
+            android:textColor="@color/heading_color"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_fontSizeDecrease"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/nav_bar_color"
+                android:text="-"
+                android:textColor="@color/heading_color"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/button_fontSizeIncrease"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:backgroundTint="@color/nav_bar_color"
+                android:text="+"
+                android:textColor="@color/heading_color"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <!-- Scroll Speed Control (Optional) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scroll Speed"
+            android:textColor="@color/heading_color"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/slider_scrollSpeed"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="50"
+            android:progressTint="@color/text_color"
+            android:thumb="@drawable/slider_thumb" />
+    </LinearLayout>
+
+    <!-- Record button at the bottom center -->
+    <FrameLayout
+        android:id="@+id/button_record"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView_recordButton"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:background="@drawable/record_button_idle" />
+
+        <TextView
+            android:id="@+id/textView_recordButtonLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:text="Start Recording"
+            android:textColor="@color/heading_color"
+            android:textSize="14sp" />
+    </FrameLayout>
+
+    <!-- Thumbnail of last recording at bottom left -->
+    <ImageView
+        android:id="@+id/imageView_lastRecordingThumbnail"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="24dp"
+        android:background="@drawable/record_button_idle"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Loading placeholder message -->
     <TextView
         android:id="@+id/textView_placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Starting camera..."
+        android:textColor="@color/heading_color"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView_scriptOverlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#80000000"
-        android:padding="16dp"
-        android:scrollbars="vertical"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/button_recordToggle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Script content will appear here..." />
-
-    <Button
-        android:id="@+id/button_recordToggle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Start Recording"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout> 

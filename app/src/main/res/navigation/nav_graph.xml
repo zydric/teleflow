@@ -48,6 +48,9 @@
         <action
             android:id="@+id/action_recordFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_recordFragment_to_recordingsFragment"
+            app:destination="@id/recordingsFragment" />
         <argument
             android:name="scriptTitle"
             app:argType="string"

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teleflow.R
 import com.example.teleflow.adapters.RecordingAdapter
@@ -38,9 +38,17 @@ class RecordingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set up recordings RecyclerView
+        // Set up recordings RecyclerView with GridLayoutManager
         recordingsRecyclerView = view.findViewById(R.id.recyclerView_recordings_list)
-        recordingsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        
+        // Use a GridLayoutManager with 2 columns
+        val gridLayoutManager = GridLayoutManager(requireContext(), 2)
+        recordingsRecyclerView.layoutManager = gridLayoutManager
+        
+        // Add some spacing between items
+        recordingsRecyclerView.addItemDecoration(
+            GridSpacingItemDecoration(2, resources.getDimensionPixelSize(R.dimen.grid_spacing), true)
+        )
         
         // Create recording adapter with callbacks
         recordingAdapter = RecordingAdapter(
@@ -56,7 +64,8 @@ class RecordingsFragment : Fragment() {
             getScript = { scriptId -> 
                 scriptViewModel.getScriptById(scriptId)
             },
-            lifecycleOwner = viewLifecycleOwner
+            lifecycleOwner = viewLifecycleOwner,
+            useGridLayout = true // Indicate we're using a grid layout
         )
         recordingsRecyclerView.adapter = recordingAdapter
         
@@ -66,6 +75,41 @@ class RecordingsFragment : Fragment() {
             view.findViewById<View>(R.id.textView_no_recordings).visibility = 
                 if (recordings.isEmpty()) View.VISIBLE else View.GONE
         })
+    }
+    
+    // Add a GridSpacingItemDecoration for even spacing between grid items
+    inner class GridSpacingItemDecoration(
+        private val spanCount: Int,
+        private val spacing: Int,
+        private val includeEdge: Boolean
+    ) : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(
+            outRect: android.graphics.Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            val position = parent.getChildAdapterPosition(view)
+            val column = position % spanCount
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount
+                outRect.right = (column + 1) * spacing / spanCount
+
+                if (position < spanCount) {
+                    outRect.top = spacing
+                }
+                outRect.bottom = spacing
+            } else {
+                outRect.left = column * spacing / spanCount
+                outRect.right = spacing - (column + 1) * spacing / spanCount
+
+                if (position >= spanCount) {
+                    outRect.top = spacing
+                }
+            }
+        }
     }
     
     private fun showRecordingOptionsMenu(view: View, recording: Recording) {
@@ -118,5 +162,13 @@ class RecordingsFragment : Fragment() {
             putLong("date", recording.date)
         }
         findNavController().navigate(R.id.action_recordingsFragment_to_videoPlayerFragment, bundle)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clear the thumbnail cache when the view is destroyed
+        if (::recordingAdapter.isInitialized) {
+            recordingAdapter.clearCache()
+        }
     }
 } 

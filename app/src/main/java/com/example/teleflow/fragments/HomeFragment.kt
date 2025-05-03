@@ -262,4 +262,12 @@ class HomeFragment : Fragment() {
         }
         findNavController().navigate(R.id.action_homeFragment_to_videoPlayerFragment, bundle)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clear the thumbnail cache when the view is destroyed
+        if (::recordingAdapter.isInitialized) {
+            recordingAdapter.clearCache()
+        }
+    }
 } 

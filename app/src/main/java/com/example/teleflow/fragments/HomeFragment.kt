@@ -89,6 +89,12 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_scriptsFragment)
         }
         
+        // Set up "View All" recordings button click listener
+        val viewAllRecordingsButton = view.findViewById<TextView>(R.id.textView_viewAllRecordings)
+        viewAllRecordingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_recordingsFragment)
+        }
+        
         // Observe the scripts from ViewModel
         scriptViewModel.allScripts.observe(viewLifecycleOwner, Observer { scripts ->
             // Cache the script list
@@ -100,8 +106,8 @@ class HomeFragment : Fragment() {
         
         // Observe the recordings from ViewModel
         recordingViewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
-            // Update the adapter with the latest recordings
-            recordingAdapter.updateData(recordings)
+            // Update the adapter with the latest 5 recordings
+            recordingAdapter.updateData(recordings.take(5))
         })
     }
     

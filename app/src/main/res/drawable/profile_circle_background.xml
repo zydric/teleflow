@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Gradient border -->
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:type="linear"
+                android:angle="45"
+                android:startColor="@color/active_color"
+                android:endColor="#00CCCC" />
+            <size
+                android:width="86dp"
+                android:height="86dp" />
+        </shape>
+    </item>
+    <!-- Background -->
+    <item
+        android:left="3dp"
+        android:top="3dp"
+        android:right="3dp"
+        android:bottom="3dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/nav_bar_color" />
+        </shape>
+    </item>
+</layer-list> 

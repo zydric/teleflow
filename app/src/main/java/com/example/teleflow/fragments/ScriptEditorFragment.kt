@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
 import com.example.teleflow.models.Script
 import com.example.teleflow.viewmodels.ScriptViewModel
+import java.util.Date
 
 class ScriptEditorFragment : Fragment() {
 
@@ -25,6 +26,7 @@ class ScriptEditorFragment : Fragment() {
     
     // If scriptId is -1, we're creating a new script. Otherwise, we're editing an existing one
     private var scriptId: Int = -1
+    private var originalScript: Script? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +51,7 @@ class ScriptEditorFragment : Fragment() {
             if (scriptId != -1) {
                 scriptViewModel.getScriptById(scriptId).observe(viewLifecycleOwner, Observer { script ->
                     script?.let {
+                        originalScript = it
                         titleEditText.setText(it.title)
                         contentEditText.setText(it.content)
                     }
@@ -78,11 +81,28 @@ class ScriptEditorFragment : Fragment() {
         }
         
         // Create or update script
-        val script = Script(
-            id = if (scriptId != -1) scriptId else 0,
-            title = title,
-            content = content
-        )
+        val script = if (scriptId != -1) {
+            // Update existing script, preserve creation date but update last modified
+            Script(
+                id = scriptId,
+                title = title,
+                content = content,
+                createdAt = originalScript?.createdAt ?: Date(),
+                lastUsedAt = originalScript?.lastUsedAt,
+                lastModifiedAt = Date()
+            )
+        } else {
+            // Create new script with current date
+            val now = Date()
+            Script(
+                id = 0, // Room will auto-generate
+                title = title,
+                content = content,
+                createdAt = now,
+                lastUsedAt = null,
+                lastModifiedAt = now
+            )
+        }
         
         // Save to database
         if (scriptId != -1) {

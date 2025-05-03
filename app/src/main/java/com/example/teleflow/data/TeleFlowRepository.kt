@@ -5,6 +5,7 @@ import com.example.teleflow.data.dao.RecordingDao
 import com.example.teleflow.data.dao.ScriptDao
 import com.example.teleflow.models.Recording
 import com.example.teleflow.models.Script
+import java.util.Date
 
 class TeleFlowRepository(
     private val scriptDao: ScriptDao,
@@ -35,8 +36,8 @@ class TeleFlowRepository(
     }
     
     suspend fun updateScriptLastUsed(id: Int) {
-        // Simply update the lastUsed timestamp directly
-        scriptDao.updateLastUsed(id, System.currentTimeMillis())
+        // Update the lastUsedAt timestamp
+        scriptDao.updateLastUsed(id, Date())
     }
     
     // Recordings

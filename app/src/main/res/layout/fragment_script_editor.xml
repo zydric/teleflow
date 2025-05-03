@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/background_color"
     tools:context=".fragments.ScriptEditorFragment">
 
     <TextView
@@ -14,6 +15,7 @@
         android:text="Script Title"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/heading_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +27,9 @@
         android:hint="Enter script title"
         android:inputType="text"
         android:maxLines="1"
-        android:padding="12dp"
+        android:padding="16dp"
+        android:textColor="@color/heading_color"
+        android:textColorHint="@color/text_color"
         android:background="@drawable/edit_text_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +39,11 @@
         android:id="@+id/textView_contentLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="Script Content"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/heading_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_title" />
 
@@ -47,12 +52,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/edit_text_background"
         android:gravity="top|start"
         android:hint="Enter your script content here"
         android:inputType="textMultiLine"
-        android:padding="12dp"
+        android:padding="16dp"
+        android:textColor="@color/heading_color"
+        android:textColorHint="@color/text_color"
+        android:lineSpacingExtra="4dp"
         app:layout_constraintBottom_toTopOf="@+id/button_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,6 +71,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Save Script"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:background="@drawable/button_primary_background"
+        android:padding="16dp"
+        android:textAllCaps="false"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

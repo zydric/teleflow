@@ -8,13 +8,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.teleflow.models.Script
+import java.util.Date
 
 @Dao
 interface ScriptDao {
     @Query("SELECT * FROM scripts ORDER BY title ASC")
     fun getAllScripts(): LiveData<List<Script>>
     
-    @Query("SELECT * FROM scripts ORDER BY lastUsed DESC")
+    @Query("SELECT * FROM scripts WHERE lastUsedAt IS NOT NULL ORDER BY lastUsedAt DESC LIMIT 3")
     fun getRecentlyUsedScripts(): LiveData<List<Script>>
     
     @Query("SELECT * FROM scripts WHERE id = :id")
@@ -23,8 +24,8 @@ interface ScriptDao {
     @Query("SELECT * FROM scripts WHERE id = :id")
     suspend fun getScriptByIdSync(id: Int): Script?
     
-    @Query("UPDATE scripts SET lastUsed = :timestamp WHERE id = :id")
-    suspend fun updateLastUsed(id: Int, timestamp: Long)
+    @Query("UPDATE scripts SET lastUsedAt = :date, lastModifiedAt = :date WHERE id = :id")
+    suspend fun updateLastUsed(id: Int, date: Date)
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(script: Script): Long

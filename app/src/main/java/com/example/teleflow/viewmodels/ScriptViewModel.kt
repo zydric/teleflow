@@ -9,6 +9,7 @@ import com.example.teleflow.data.TeleFlowRepository
 import com.example.teleflow.models.Script
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class ScriptViewModel(application: Application) : AndroidViewModel(application) {
     
@@ -47,31 +48,42 @@ class ScriptViewModel(application: Application) : AndroidViewModel(application) 
     
     // Function to initialize the database with sample scripts if needed
     fun insertSampleScripts() = viewModelScope.launch(Dispatchers.IO) {
+        val now = Date()
         val sampleScripts = listOf(
             Script(
                 id = 0, // Room will auto-generate the ID
                 title = "Product Introduction",
-                content = "Hello everyone! Today I'm excited to introduce our latest product. This innovative solution addresses many of the challenges our customers have been facing..."
+                content = "Hello everyone! Today I'm excited to introduce our latest product. This innovative solution addresses many of the challenges our customers have been facing...",
+                createdAt = now,
+                lastModifiedAt = now
             ),
             Script(
                 id = 0,
                 title = "Weekly Update",
-                content = "Welcome to this week's update. We've made significant progress on several key initiatives. First, the development team completed the new payment gateway integration..."
+                content = "Welcome to this week's update. We've made significant progress on several key initiatives. First, the development team completed the new payment gateway integration...",
+                createdAt = now,
+                lastModifiedAt = now
             ),
             Script(
                 id = 0,
                 title = "Tutorial: Getting Started",
-                content = "Welcome to this tutorial where I'll walk you through getting started with our platform. The first step is to create your account by clicking the sign-up button..."
+                content = "Welcome to this tutorial where I'll walk you through getting started with our platform. The first step is to create your account by clicking the sign-up button...",
+                createdAt = now,
+                lastModifiedAt = now
             ),
             Script(
                 id = 0,
                 title = "Social Media Promo",
-                content = "Hey followers! Don't miss our limited-time offer - 30% off all premium subscriptions when you use code SUMMER30 at checkout. This deal ends Friday!..."
+                content = "Hey followers! Don't miss our limited-time offer - 30% off all premium subscriptions when you use code SUMMER30 at checkout. This deal ends Friday!...",
+                createdAt = now,
+                lastModifiedAt = now
             ),
             Script(
                 id = 0,
                 title = "Meeting Presentation",
-                content = "Good morning team! Today's agenda includes a review of Q2 results, discussion of upcoming product features, and team assignments for the next sprint..."
+                content = "Good morning team! Today's agenda includes a review of Q2 results, discussion of upcoming product features, and team assignments for the next sprint...",
+                createdAt = now,
+                lastModifiedAt = now
             )
         )
         repository.insertAllScripts(sampleScripts)

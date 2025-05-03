@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.teleflow.data.dao.RecordingDao
 import com.example.teleflow.data.dao.ScriptDao
+import com.example.teleflow.database.Converters
 import com.example.teleflow.models.Recording
 import com.example.teleflow.models.Script
 
-@Database(entities = [Script::class, Recording::class], version = 2, exportSchema = false)
+@Database(entities = [Script::class, Recording::class], version = 3, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class TeleFlowDatabase : RoomDatabase() {
     
     abstract fun scriptDao(): ScriptDao

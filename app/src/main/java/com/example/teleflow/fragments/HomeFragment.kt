@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -16,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teleflow.R
 import com.example.teleflow.adapters.RecordingAdapter
-import com.example.teleflow.adapters.ScriptAdapter
 import com.example.teleflow.models.Recording
 import com.example.teleflow.models.Script
 import com.example.teleflow.viewmodels.RecordingViewModel
@@ -24,14 +26,19 @@ import com.example.teleflow.viewmodels.ScriptViewModel
 
 class HomeFragment : Fragment() {
 
-    private lateinit var scriptsRecyclerView: RecyclerView
     private lateinit var recordingsRecyclerView: RecyclerView
-    
-    private lateinit var scriptAdapter: ScriptAdapter
     private lateinit var recordingAdapter: RecordingAdapter
+    
+    // Script item views
+    private lateinit var scriptItem1: View
+    private lateinit var scriptItem2: View
+    private lateinit var scriptItem3: View
     
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val recordingViewModel: RecordingViewModel by viewModels()
+
+    // Cache for script data
+    private var scriptsList = listOf<Script>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,36 +51,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set up scripts RecyclerView
-        scriptsRecyclerView = view.findViewById(R.id.recyclerView_scripts)
-        scriptsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        // Find the script item views
+        scriptItem1 = view.findViewById(R.id.script_item_1)
+        scriptItem2 = view.findViewById(R.id.script_item_2)
+        scriptItem3 = view.findViewById(R.id.script_item_3)
         
-        // Create script adapter with empty list (will be populated from ViewModel)
-        scriptAdapter = ScriptAdapter(
-            mutableListOf(),
-            onItemClick = { script ->
-                // When a recent script is clicked from the home screen, navigate directly to recording
-                val bundle = Bundle().apply {
-                    putString("scriptTitle", script.title)
-                    putString("scriptContent", script.content)
-                    putInt("scriptId", script.id)
-                }
-                // Navigate directly to the recording fragment with the selected script
-                findNavController().navigate(R.id.recordFragment, bundle)
-                
-                // Show a toast confirming the selection
-                Toast.makeText(
-                    requireContext(),
-                    "Selected recent script: ${script.title}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            },
-            onItemLongClick = { script, view ->
-                // Show popup menu with edit and delete options
-                showScriptOptionsMenu(view, script)
-            }
-        )
-        scriptsRecyclerView.adapter = scriptAdapter
+        // Initially hide all script items until data is loaded
+        scriptItem1.visibility = View.GONE
+        scriptItem2.visibility = View.GONE
+        scriptItem3.visibility = View.GONE
 
         // Set up recordings RecyclerView
         recordingsRecyclerView = view.findViewById(R.id.recyclerView_recordings)
@@ -105,9 +91,11 @@ class HomeFragment : Fragment() {
         
         // Observe the scripts from ViewModel
         scriptViewModel.allScripts.observe(viewLifecycleOwner, Observer { scripts ->
-            // Update the adapter with the latest scripts (limit to 3 for recent scripts)
-            val recentScripts = scripts.take(3)
-            scriptAdapter.updateData(recentScripts)
+            // Cache the script list
+            scriptsList = scripts
+            
+            // Update the script items with the latest 3 scripts
+            updateScriptItems()
         })
         
         // Observe the recordings from ViewModel
@@ -115,6 +103,72 @@ class HomeFragment : Fragment() {
             // Update the adapter with the latest recordings
             recordingAdapter.updateData(recordings)
         })
+    }
+    
+    private fun updateScriptItems() {
+        val recentScripts = scriptsList.take(3)
+        
+        // Clear all script items first
+        scriptItem1.visibility = View.GONE
+        scriptItem2.visibility = View.GONE
+        scriptItem3.visibility = View.GONE
+        
+        // Populate script items based on available data
+        if (recentScripts.isNotEmpty()) {
+            updateScriptItem(scriptItem1, recentScripts[0], 0)
+        }
+        
+        if (recentScripts.size > 1) {
+            updateScriptItem(scriptItem2, recentScripts[1], 1)
+        }
+        
+        if (recentScripts.size > 2) {
+            updateScriptItem(scriptItem3, recentScripts[2], 2)
+        }
+    }
+    
+    private fun updateScriptItem(itemView: View, script: Script, position: Int) {
+        // Set visibility
+        itemView.visibility = View.VISIBLE
+        
+        // Find views within the item
+        val titleTextView = itemView.findViewById<TextView>(R.id.textView_scriptTitle)
+        val previewTextView = itemView.findViewById<TextView>(R.id.textView_scriptPreview)
+        val moreOptionsImageView = itemView.findViewById<ImageView>(R.id.imageView_more)
+        
+        // Set data
+        titleTextView.text = script.title
+        previewTextView.text = script.content
+        
+        // Set up the more options (3-dot menu) click listener
+        moreOptionsImageView.setOnClickListener { view ->
+            showScriptOptionsMenu(view, script)
+        }
+        
+        // Set click listener for the entire item
+        itemView.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("scriptTitle", script.title)
+                putString("scriptContent", script.content)
+                putInt("scriptId", script.id)
+            }
+            // Navigate directly to the recording fragment with the selected script
+            findNavController().navigate(R.id.recordFragment, bundle)
+            
+            // Show a toast confirming the selection
+            Toast.makeText(
+                requireContext(),
+                "Selected recent script: ${script.title}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        
+        // Set long click listener to directly show delete option
+        itemView.setOnLongClickListener {
+            // For long press, just show delete confirmation directly
+            showDeleteConfirmationDialog(script)
+            true
+        }
     }
     
     private fun showScriptOptionsMenu(view: View, script: Script) {

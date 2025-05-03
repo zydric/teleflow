@@ -5,37 +5,45 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imageView_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@android:drawable/ic_media_play"
-            android:background="#DDDDDD" />
+            android:background="#DDDDDD"
+            android:contentDescription="Video thumbnail" />
 
-        <TextView
-            android:id="@+id/textView_recordingTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="Recording Title" />
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <TextView
-            android:id="@+id/textView_recordingDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Apr 30, 2025 12:34" />
+            <TextView
+                android:id="@+id/textView_recordingTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="Recording Title" />
+
+            <TextView
+                android:id="@+id/textView_recordingDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:text="Apr 30, 2025 12:34" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView> 

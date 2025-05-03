@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -42,13 +43,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         // Set up bottom navigation
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         
-        // Define the top-level destinations (these won't have a back button in the app bar)
+        // Define only HomeFragment as top-level destination (with hamburger menu)
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.homeFragment,
-                R.id.scriptsFragment,
-                R.id.profileFragment
-            ),
+            setOf(R.id.homeFragment),
             drawerLayout
         )
         
@@ -59,13 +56,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         toggle = ActionBarDrawerToggle(
             this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
         
-        // Enable hamburger menu
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        
-        // Listen for destination changes to set custom titles
+        // Listen for destination changes to configure drawer toggle visibility
         navController.addOnDestinationChangedListener(this)
         
         // Set up bottom navigation with basic configuration
@@ -101,18 +93,59 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         // Set custom title based on the current destination
         when (destination.id) {
-            R.id.homeFragment -> supportActionBar?.title = "TeleFlow"
-            R.id.scriptsFragment -> supportActionBar?.title = "My Scripts"
-            R.id.profileFragment -> supportActionBar?.title = "My Profile"
-            R.id.recordingsFragment -> supportActionBar?.title = "My Recordings"
-            R.id.recordFragment -> supportActionBar?.title = "Record Video"
-            R.id.videoPlayerFragment -> supportActionBar?.title = "Video Player"
-            R.id.settingsFragment -> supportActionBar?.title = "Settings"
+            R.id.homeFragment -> {
+                supportActionBar?.title = "TeleFlow"
+                
+                // Enable drawer toggle only on home fragment
+                if (!::toggle.isInitialized) return
+                
+                // Set up drawer toggle for home screen
+                drawerLayout.removeDrawerListener(toggle)
+                drawerLayout.addDrawerListener(toggle)
+                toggle.syncState()
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            }
+            R.id.scriptsFragment -> {
+                supportActionBar?.title = "My Scripts"
+                handleNonHomeDestination()
+            }
+            R.id.profileFragment -> {
+                supportActionBar?.title = "My Profile"
+                handleNonHomeDestination()
+            }
+            R.id.recordingsFragment -> {
+                supportActionBar?.title = "My Recordings"
+                handleNonHomeDestination()
+            }
+            R.id.recordFragment -> {
+                supportActionBar?.title = "Record Video"
+                handleNonHomeDestination()
+            }
+            R.id.videoPlayerFragment -> {
+                supportActionBar?.title = "Video Player"
+                handleNonHomeDestination()
+            }
+            R.id.settingsFragment -> {
+                supportActionBar?.title = "Settings"
+                handleNonHomeDestination()
+            }
             R.id.scriptEditorFragment -> {
                 val isEditing = arguments?.getInt("scriptId", -1) != -1
                 supportActionBar?.title = if (isEditing) "Edit Script" else "New Script"
+                handleNonHomeDestination()
             }
         }
+    }
+    
+    private fun handleNonHomeDestination() {
+        // For non-home destinations, disable the drawer toggle and lock the drawer
+        if (!::toggle.isInitialized) return
+        
+        drawerLayout.removeDrawerListener(toggle)
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(null) // Use default back arrow
     }
     
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -139,9 +172,17 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks
-        if (toggle.onOptionsItemSelected(item)) {
+        val currentDestination = navController.currentDestination?.id
+        
+        if (currentDestination == R.id.homeFragment && toggle.onOptionsItemSelected(item)) {
+            // Let the drawer toggle handle it (only on home screen)
+            return true
+        } else if (item.itemId == android.R.id.home) {
+            // Handle the back button press
+            onBackPressed()
             return true
         }
+        
         return super.onOptionsItemSelected(item)
     }
     

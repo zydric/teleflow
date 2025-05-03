@@ -69,8 +69,8 @@ class ProfileFragment : Fragment() {
         
         // Change Password
         changePasswordItem.setOnClickListener {
-            // This would navigate to password change screen in a real app
-            Toast.makeText(requireContext(), "Change Password coming soon", Toast.LENGTH_SHORT).show()
+            // Navigate to the Change Password screen
+            findNavController().navigate(R.id.action_profileFragment_to_changePasswordFragment)
         }
         
         // Logout

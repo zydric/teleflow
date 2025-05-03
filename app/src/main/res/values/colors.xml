@@ -33,4 +33,9 @@
 
     <!-- Red for logout -->
     <color name="logout_color">#EF4444</color>
+    
+    <!-- Password strength indicator colors -->
+    <color name="yellow_darker">#E6B800</color> <!-- Darker version of accent yellow -->
+    <color name="primary_button_color">#10B981</color> <!-- Green for success/strong -->
+    <color name="accent_color">#FFCC00</color> <!-- Same as active_color for consistency -->
 </resources>

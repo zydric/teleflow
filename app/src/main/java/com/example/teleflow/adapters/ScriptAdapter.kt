@@ -3,6 +3,7 @@ package com.example.teleflow.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teleflow.R
@@ -17,6 +18,7 @@ class ScriptAdapter(
     class ScriptViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.textView_scriptTitle)
         val contentTextView: TextView = itemView.findViewById(R.id.textView_scriptPreview)
+        val moreOptionsImageView: ImageView = itemView.findViewById(R.id.imageView_more)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScriptViewHolder {
@@ -40,6 +42,13 @@ class ScriptAdapter(
         // Set up click listener
         holder.itemView.setOnClickListener {
             onItemClick(script)
+        }
+        
+        // Set up a click listener for the "more options" icon
+        onItemLongClick?.let { longClickHandler ->
+            holder.moreOptionsImageView.setOnClickListener { view ->
+                longClickHandler(script, view)
+            }
         }
         
         // Set up long-click listener if provided

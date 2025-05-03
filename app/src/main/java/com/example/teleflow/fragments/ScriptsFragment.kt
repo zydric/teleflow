@@ -1,5 +1,6 @@
 package com.example.teleflow.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teleflow.R
+import com.example.teleflow.RecordActivity
 import com.example.teleflow.adapters.ScriptAdapter
 import com.example.teleflow.viewmodels.ScriptViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -50,16 +52,16 @@ class ScriptsFragment : Fragment() {
         val scriptAdapter = ScriptAdapter(
             mutableListOf(),
             onItemClick = { script ->
-                // Navigate to recording fragment and pass the script data
-                val bundle = bundleOf(
-                    "scriptTitle" to script.title,
-                    "scriptContent" to script.content,
-                    "scriptId" to script.id
-                )
-                findNavController().navigate(
-                    R.id.action_scriptsFragment_to_recordFragment,
-                    bundle
-                )
+                // Launch RecordActivity directly instead of using navigation
+                val intent = Intent(requireContext(), RecordActivity::class.java).apply {
+                    putExtra("scriptTitle", script.title)
+                    putExtra("scriptContent", script.content)
+                    putExtra("scriptId", script.id)
+                }
+                startActivity(intent)
+                
+                // Update script last used timestamp
+                scriptViewModel.updateScriptLastUsed(script.id)
             },
             onItemLongClick = { script, view ->
                 // Show popup menu with edit and delete options

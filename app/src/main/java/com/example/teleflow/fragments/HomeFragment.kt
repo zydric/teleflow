@@ -1,6 +1,7 @@
 package com.example.teleflow.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.teleflow.R
+import com.example.teleflow.RecordActivity
 import com.example.teleflow.adapters.RecordingAdapter
 import com.example.teleflow.models.Recording
 import com.example.teleflow.models.Script
@@ -154,20 +156,16 @@ class HomeFragment : Fragment() {
         
         // Set click listener for the entire item
         itemView.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("scriptTitle", script.title)
-                putString("scriptContent", script.content)
-                putInt("scriptId", script.id)
+            // Launch RecordActivity directly
+            val intent = Intent(requireContext(), RecordActivity::class.java).apply {
+                putExtra("scriptTitle", script.title)
+                putExtra("scriptContent", script.content)
+                putExtra("scriptId", script.id)
             }
-            // Navigate directly to the recording fragment with the selected script
-            findNavController().navigate(R.id.recordFragment, bundle)
+            startActivity(intent)
             
-            // Show a toast confirming the selection
-            Toast.makeText(
-                requireContext(),
-                "Selected recent script: ${script.title}",
-                Toast.LENGTH_SHORT
-            ).show()
+            // Update last used timestamp
+            scriptViewModel.updateScriptLastUsed(script.id)
         }
         
         // Set long click listener to directly show delete option

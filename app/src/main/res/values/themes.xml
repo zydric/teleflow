@@ -40,4 +40,36 @@
         <item name="itemIconTint">@color/bottom_nav_item_color</item>
         <item name="itemTextColor">@color/bottom_nav_item_color</item>
     </style>
+    
+    <!-- No Action Bar theme for RecordFragment -->
+    <style name="Theme.TeleFlow.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/active_color</item>
+        <item name="colorPrimaryDark">@color/nav_bar_color</item>
+        <item name="colorAccent">@color/active_color</item>
+        
+        <!-- Window/background colors -->
+        <item name="android:windowBackground">@android:color/black</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/heading_color</item>
+        <item name="android:textColorSecondary">@color/text_color</item>
+        
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        
+        <!-- Full screen flags -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        
+        <!-- For Android 5.0+ specific -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        
+        <!-- Force disable action bar -->
+        <item name="actionBarSize">0dp</item>
+    </style>
 </resources>

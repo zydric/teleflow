@@ -1,7 +1,11 @@
 package com.example.teleflow
 
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -16,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.example.teleflow.fragments.RecordFragment
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -94,7 +99,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         // Set custom title based on the current destination
         when (destination.id) {
             R.id.homeFragment -> {
+                // Restore original theme if needed
+                setTheme(R.style.Theme_TeleFlow)
+                
                 supportActionBar?.title = "TeleFlow"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 
                 // Enable drawer toggle only on home fragment
                 if (!::toggle.isInitialized) return
@@ -108,31 +118,49 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             }
             R.id.scriptsFragment -> {
                 supportActionBar?.title = "My Scripts"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
             R.id.profileFragment -> {
                 supportActionBar?.title = "My Profile"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
             R.id.recordingsFragment -> {
                 supportActionBar?.title = "My Recordings"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
             R.id.recordFragment -> {
-                supportActionBar?.title = "Record Video"
+                // Apply NoActionBar theme for RecordFragment
+                supportActionBar?.hide()
+                bottomNavigationView.visibility = View.GONE
+                
+                // Enable immersive mode
+                enableImmersiveMode()
+                
                 handleNonHomeDestination()
             }
             R.id.videoPlayerFragment -> {
                 supportActionBar?.title = "Video Player"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
             R.id.settingsFragment -> {
                 supportActionBar?.title = "Settings"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
             R.id.scriptEditorFragment -> {
                 val isEditing = arguments?.getInt("scriptId", -1) != -1
                 supportActionBar?.title = if (isEditing) "Edit Script" else "New Script"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
         }
@@ -195,7 +223,57 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            // Special handling for RecordFragment
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                ?.childFragmentManager
+                ?.fragments
+                ?.firstOrNull()
+                
+            if (currentFragment is RecordFragment) {
+                currentFragment.handleBackPressed()
+            } else {
+                super.onBackPressed()
+                
+                // Check if we're returning from RecordFragment by looking at the current destination
+                val currentDestId = navController.currentDestination?.id
+                if (currentDestId != R.id.recordFragment) {
+                    // If we're no longer on the record fragment, disable immersive mode
+                    disableImmersiveMode()
+                }
+            }
+        }
+    }
+    
+    private fun enableImmersiveMode() {
+        // For immersive fullscreen experience on RecordFragment
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11+ (API 30+)
+            window.setDecorFitsSystemWindows(false)
+            window.insetsController?.let {
+                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            // For earlier Android versions
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        }
+    }
+    
+    private fun disableImmersiveMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(true)
+            window.insetsController?.show(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         }
     }
     

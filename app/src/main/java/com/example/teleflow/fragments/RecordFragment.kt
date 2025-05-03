@@ -3,6 +3,7 @@ package com.example.teleflow.fragments
 import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -18,16 +19,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -46,6 +52,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
+import com.example.teleflow.RecordActivity
 import com.example.teleflow.viewmodels.RecordingViewModel
 import com.example.teleflow.viewmodels.ScriptViewModel
 import java.text.SimpleDateFormat
@@ -69,19 +76,22 @@ class RecordFragment : Fragment() {
     private lateinit var scriptScrollView: ScrollView
     private lateinit var recordButton: FrameLayout
     private lateinit var recordButtonImage: ImageView
-    private lateinit var recordButtonLabel: TextView
     private lateinit var timerTextView: TextView
+    private lateinit var backButton: FrameLayout
+    private lateinit var mediaButton: FrameLayout
+    
+    // Control components
     private lateinit var opacitySlider: SeekBar
+    private lateinit var fontSizeIncreaseButton: ImageButton
+    private lateinit var fontSizeDecreaseButton: ImageButton
     private lateinit var scrollSpeedSlider: SeekBar
-    private lateinit var fontSizeIncreaseButton: Button
-    private lateinit var fontSizeDecreaseButton: Button
-    private lateinit var toolbar: Toolbar
-    private lateinit var lastRecordingThumbnail: ImageView
+    private lateinit var fontSizeTextView: TextView
     
     // Camera components
     private lateinit var cameraExecutor: ExecutorService
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
+    private var isFrontCamera = true // Track which camera is currently in use
     
     // Recording status
     private var isRecording = false
@@ -92,9 +102,14 @@ class RecordFragment : Fragment() {
     private lateinit var timerRunnable: Runnable
     
     // Font size
-    private var currentFontSize = 16f
+    private var currentFontSize = 18f
     private val minFontSize = 12f
     private val maxFontSize = 24f
+    
+    // Auto scroll
+    private var isAutoScrolling = false
+    private var scrollSpeed = 50 // Default value
+    private lateinit var autoScrollRunnable: Runnable
     
     // ViewModels
     private val scriptViewModel: ScriptViewModel by viewModels()
@@ -122,6 +137,32 @@ class RecordFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Apply the NoActionBar theme
+        activity?.setTheme(R.style.Theme_TeleFlow_NoActionBar)
+        
+        // Force hide action bar
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+        
+        // Set immersive mode flags
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            activity?.window?.insetsController?.let {
+                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -132,6 +173,13 @@ class RecordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Set window flags for immersive mode
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        
+        // Ensure we have immersive mode
+        setImmersiveMode()
 
         // Get the script data from arguments
         arguments?.let { args ->
@@ -146,67 +194,31 @@ class RecordFragment : Fragment() {
         scriptScrollView = view.findViewById(R.id.scrollView_script)
         recordButton = view.findViewById(R.id.button_record)
         recordButtonImage = view.findViewById(R.id.imageView_recordButton)
-        recordButtonLabel = view.findViewById(R.id.textView_recordButtonLabel)
         timerTextView = view.findViewById(R.id.textView_timer)
+        backButton = view.findViewById(R.id.button_back)
+        mediaButton = view.findViewById(R.id.button_media)
+        
+        // Control components
         opacitySlider = view.findViewById(R.id.slider_opacity)
-        scrollSpeedSlider = view.findViewById(R.id.slider_scrollSpeed)
         fontSizeIncreaseButton = view.findViewById(R.id.button_fontSizeIncrease)
         fontSizeDecreaseButton = view.findViewById(R.id.button_fontSizeDecrease)
-        toolbar = view.findViewById(R.id.toolbar)
-        lastRecordingThumbnail = view.findViewById(R.id.imageView_lastRecordingThumbnail)
+        scrollSpeedSlider = view.findViewById(R.id.slider_scrollSpeed)
         
-        // Set up toolbar
-        toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+        // Set the font size text view (we'll use the current size)
+        fontSizeTextView = TextView(context)
+        fontSizeTextView.text = currentFontSize.toInt().toString()
         
         // Display the script content in the overlay
         scriptOverlayTextView.text = "$scriptTitle\n\n$scriptContent"
         
-        // Set up button click listener
-        recordButton.setOnClickListener {
-            toggleRecording()
-        }
+        // Set initial font size
+        scriptOverlayTextView.textSize = currentFontSize
         
-        // Set up opacity slider
-        opacitySlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Calculate opacity (from 0.2 to 0.8)
-                val opacity = 0.2f + (progress / 100f * 0.6f)
-                // Apply opacity to script background
-                scriptScrollView.background.alpha = (opacity * 255).toInt()
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        // Set up button click listeners
+        setupClickListeners()
         
-        // Set up font size buttons
-        fontSizeIncreaseButton.setOnClickListener {
-            if (currentFontSize < maxFontSize) {
-                currentFontSize += 2f
-                scriptOverlayTextView.textSize = currentFontSize
-            }
-        }
-        
-        fontSizeDecreaseButton.setOnClickListener {
-            if (currentFontSize > minFontSize) {
-                currentFontSize -= 2f
-                scriptOverlayTextView.textSize = currentFontSize
-            }
-        }
-        
-        // Setup scroll speed slider (autoscroll)
-        scrollSpeedSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Implement scroll speed logic here if needed
-                // For example, set a tag with the scroll speed value
-                scriptScrollView.tag = progress
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        // Set up slider listeners
+        setupSliderListeners()
         
         // Set up timer runnable
         timerRunnable = object : Runnable {
@@ -217,22 +229,132 @@ class RecordFragment : Fragment() {
             }
         }
         
+        // Set up auto-scroll runnable
+        autoScrollRunnable = object : Runnable {
+            override fun run() {
+                if (isAutoScrolling && isRecording) {
+                    // Calculate scroll speed based on slider value
+                    // Higher value = faster scrolling
+                    val scrollAmount = (scrollSpeed / 10) + 1
+                    scriptScrollView.smoothScrollBy(0, scrollAmount)
+                }
+                handler.postDelayed(this, 50) // Adjust timing for smoother scrolling
+            }
+        }
+        
         // Set up pulse animation
         setupPulseAnimation()
         
         // Initialize camera executor
         cameraExecutor = Executors.newSingleThreadExecutor()
         
-        // Load the last recording thumbnail if available
-        loadLastRecordingThumbnail()
-        
-        // Set up the last recording thumbnail click listener
-        lastRecordingThumbnail.setOnClickListener {
-            findNavController().navigate(R.id.action_recordFragment_to_recordingsFragment)
-        }
-        
         // Request camera and audio permissions before starting the camera
         requestCameraPermissions()
+    }
+    
+    private fun setupClickListeners() {
+        // Record button click listener
+        recordButton.setOnClickListener {
+            toggleRecording()
+        }
+        
+        // Back button click listener with confirmation dialog
+        backButton.setOnClickListener {
+            showBackConfirmationDialog()
+        }
+        
+        // Media/Gallery button click listener
+        mediaButton.setOnClickListener {
+            // If we're recording, don't allow camera switch
+            if (isRecording) {
+                Toast.makeText(context, "Cannot switch camera while recording", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            // Toggle between front and back camera
+            isFrontCamera = !isFrontCamera
+            startCamera()
+            
+            Toast.makeText(
+                context, 
+                "Switched to ${if(isFrontCamera) "front" else "back"} camera", 
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        
+        // Font size adjustment buttons
+        fontSizeIncreaseButton.setOnClickListener {
+            if (currentFontSize < maxFontSize) {
+                currentFontSize += 2f
+                scriptOverlayTextView.textSize = currentFontSize
+                fontSizeTextView.text = currentFontSize.toInt().toString()
+            }
+        }
+        
+        fontSizeDecreaseButton.setOnClickListener {
+            if (currentFontSize > minFontSize) {
+                currentFontSize -= 2f
+                scriptOverlayTextView.textSize = currentFontSize
+                fontSizeTextView.text = currentFontSize.toInt().toString()
+            }
+        }
+    }
+    
+    private fun setupSliderListeners() {
+        // Opacity slider
+        opacitySlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Calculate opacity (from 0.1 to 0.9)
+                val opacity = 0.1f + (progress / 100f * 0.8f)
+                // Apply opacity to script background
+                scriptScrollView.background.alpha = (opacity * 255).toInt()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        
+        // Speed slider
+        scrollSpeedSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                scrollSpeed = progress
+                
+                // If recording, update scroll speed in real-time
+                if (isRecording && !isAutoScrolling) {
+                    isAutoScrolling = true
+                    handler.post(autoScrollRunnable)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+    }
+    
+    private fun showBackConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Go Back")
+            .setMessage("Are you sure you want to go back? Recording will stop.")
+            .setPositiveButton("Yes") { _, _ ->
+                // Stop any ongoing recording
+                if (isRecording) {
+                    recording?.stop()
+                    recording = null
+                }
+                
+                // Clean up resources
+                prepareForBackNavigation()
+                
+                // If in RecordActivity, finish with animation
+                if (activity is RecordActivity) {
+                    (activity as RecordActivity).finishWithAnimation()
+                } else {
+                    // Otherwise, use regular navigation
+                    findNavController().popBackStack()
+                }
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
     
     private fun setupPulseAnimation() {
@@ -252,29 +374,6 @@ class RecordFragment : Fragment() {
         pulseAnimator = AnimatorSet()
         pulseAnimator.interpolator = AccelerateDecelerateInterpolator()
         pulseAnimator.playTogether(scaleXAnimator, scaleYAnimator)
-    }
-    
-    private fun loadLastRecordingThumbnail() {
-        recordingViewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
-            if (recordings.isNotEmpty()) {
-                val latestRecording = recordings.maxByOrNull { it.date }
-                latestRecording?.let { recording ->
-                    try {
-                        val uri = Uri.parse(recording.videoUri)
-                        val retriever = MediaMetadataRetriever()
-                        retriever.setDataSource(requireContext(), uri)
-                        val bitmap = retriever.getFrameAtTime(0)
-                        bitmap?.let {
-                            lastRecordingThumbnail.setImageBitmap(bitmap)
-                            lastRecordingThumbnail.visibility = View.VISIBLE
-                        }
-                        retriever.release()
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to load thumbnail: ${e.message}")
-                    }
-                }
-            }
-        })
     }
     
     private fun updateTimerDisplay() {
@@ -320,8 +419,12 @@ class RecordFragment : Fragment() {
                 .build()
             videoCapture = VideoCapture.withOutput(recorder)
             
-            // Select front camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+            // Select camera based on the current state
+            val cameraSelector = if (isFrontCamera) {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            } else {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            }
             
             try {
                 // Unbind use cases before rebinding
@@ -352,7 +455,7 @@ class RecordFragment : Fragment() {
         
         if (isRecording) {
             // Stop the current recording
-            recordButton.isEnabled = false
+            recordButtonImage.isEnabled = false
             recording?.stop()
             recording = null
             return
@@ -395,7 +498,7 @@ class RecordFragment : Fragment() {
                         updateRecordingUI(true)
                     }
                     is VideoRecordEvent.Finalize -> {
-                        recordButton.isEnabled = true
+                        recordButtonImage.isEnabled = true
                         updateRecordingUI(false)
                         
                         if (!recordEvent.hasError()) {
@@ -410,18 +513,9 @@ class RecordFragment : Fragment() {
                                 videoUri.toString()
                             )
                             
-                            // Update thumbnail with the new recording
-                            try {
-                                val retriever = MediaMetadataRetriever()
-                                retriever.setDataSource(requireContext(), videoUri)
-                                val bitmap = retriever.getFrameAtTime(0)
-                                bitmap?.let {
-                                    lastRecordingThumbnail.setImageBitmap(bitmap)
-                                    lastRecordingThumbnail.visibility = View.VISIBLE
-                                }
-                                retriever.release()
-                            } catch (e: Exception) {
-                                Log.e(TAG, "Failed to create thumbnail: ${e.message}")
+                            // Update script lastUsed time through ViewModel
+                            if (scriptId != -1) {
+                                scriptViewModel.updateScriptLastUsed(scriptId)
                             }
                             
                             // Show success message with the script title
@@ -456,7 +550,6 @@ class RecordFragment : Fragment() {
         if (isRecording) {
             // Update button appearance
             recordButtonImage.setBackgroundResource(R.drawable.record_button_recording)
-            recordButtonLabel.text = "Stop Recording"
             
             // Start timer
             recordingDurationSeconds = 0
@@ -464,16 +557,23 @@ class RecordFragment : Fragment() {
             updateTimerDisplay()
             handler.post(timerRunnable)
             
+            // Start auto-scrolling if enabled
+            isAutoScrolling = true
+            handler.post(autoScrollRunnable)
+            
             // Start pulse animation
             pulseAnimator.start()
         } else {
             // Update button appearance
             recordButtonImage.setBackgroundResource(R.drawable.record_button_idle)
-            recordButtonLabel.text = "Start Recording"
             
             // Stop timer
             handler.removeCallbacks(timerRunnable)
             timerTextView.visibility = View.GONE
+            
+            // Stop auto-scrolling
+            isAutoScrolling = false
+            handler.removeCallbacks(autoScrollRunnable)
             
             // Stop pulse animation
             pulseAnimator.cancel()
@@ -492,6 +592,33 @@ class RecordFragment : Fragment() {
         }
     }
     
+    // Method called by MainActivity when back button is pressed
+    fun handleBackPressed() {
+        // Show confirmation dialog
+        showBackConfirmationDialog()
+    }
+    
+    // Method to prepare fragment for back navigation
+    fun prepareForBackNavigation() {
+        // Stop any ongoing recording if active
+        if (isRecording) {
+            recording?.stop()
+            recording = null
+            updateRecordingUI(false)
+        }
+        
+        // Release camera resources
+        try {
+            cameraExecutor.shutdown()
+            
+            // Remove callbacks to prevent memory leaks
+            handler.removeCallbacks(timerRunnable)
+            handler.removeCallbacks(autoScrollRunnable)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error cleaning up resources: ${e.message}")
+        }
+    }
+    
     override fun onDestroy() {
         super.onDestroy()
         // Shut down camera executor
@@ -503,5 +630,63 @@ class RecordFragment : Fragment() {
         
         // Remove timer callbacks
         handler.removeCallbacks(timerRunnable)
+        handler.removeCallbacks(autoScrollRunnable)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        
+        // Clear fullscreen flags when leaving
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+    }
+
+    private fun setImmersiveMode() {
+        // Make sure action bar is hidden
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+        
+        // This ensures that the fragment's layout takes advantage of the full screen
+        // by setting the appropriate insets and padding
+        view?.setOnApplyWindowInsetsListener { v, insets ->
+            // Adjust layout for immersive mode
+            val params = scriptScrollView.layoutParams as ViewGroup.MarginLayoutParams
+            // Apply top inset as margin/padding to ensure the text is visible below status bar
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                params.topMargin = insets.getInsets(WindowInsets.Type.systemBars()).top
+            } else {
+                @Suppress("DEPRECATION")
+                params.topMargin = insets.systemWindowInsetTop
+            }
+            scriptScrollView.layoutParams = params
+            
+            // Return the insets
+            insets
+        }
+        
+        // Set full immersive mode
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            activity?.window?.setDecorFitsSystemWindows(false)
+            activity?.window?.insetsController?.let {
+                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Ensure immersive mode is applied when the fragment resumes
+        setImmersiveMode()
+        
+        // Make sure action bar stays hidden
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
     }
 } 

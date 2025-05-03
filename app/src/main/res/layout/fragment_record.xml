@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context=".fragments.RecordFragment">
 
     <!-- Full-screen camera preview -->
@@ -16,187 +17,252 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Toolbar at the top -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#80000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="Record"
-        app:titleTextColor="@color/heading_color" />
-
-    <!-- Recording timer -->
-    <TextView
-        android:id="@+id/textView_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#80000000"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="6dp"
-        android:text="00:00"
-        android:textColor="@color/heading_color"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <!-- Script overlay with a semi-transparent background -->
+    <!-- Script overlay with semi-transparent background -->
     <ScrollView
         android:id="@+id/scrollView_script"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
+        android:layout_width="411dp"
+        android:layout_height="293dp"
         android:background="#80000000"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_record"
-        app:layout_constraintEnd_toStartOf="@+id/layout_controls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView_scriptOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/heading_color"
-            android:textSize="16sp"
-            tools:text="Script content will appear here..." />
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit." />
     </ScrollView>
 
-    <!-- Control panel on the right side -->
+    <!-- Center timer container -->
     <LinearLayout
-        android:id="@+id/layout_controls"
+        android:id="@+id/timer_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/control_panel_background"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_record"
+        app:layout_constraintBottom_toTopOf="@+id/controlPanel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Opacity Control -->
+        <!-- Recording timer -->
         <TextView
+            android:id="@+id/textView_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Opacity"
-            android:textColor="@color/heading_color"
-            android:textSize="14sp" />
-
-        <SeekBar
-            android:id="@+id/slider_opacity"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
-            android:max="100"
-            android:progress="50"
-            android:progressTint="@color/text_color"
-            android:thumb="@drawable/slider_thumb" />
-
-        <!-- Font Size Control -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Font Size"
-            android:textColor="@color/heading_color"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_fontSizeDecrease"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/nav_bar_color"
-                android:text="-"
-                android:textColor="@color/heading_color"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/button_fontSizeIncrease"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:backgroundTint="@color/nav_bar_color"
-                android:text="+"
-                android:textColor="@color/heading_color"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-        <!-- Scroll Speed Control (Optional) -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scroll Speed"
-            android:textColor="@color/heading_color"
-            android:textSize="14sp" />
-
-        <SeekBar
-            android:id="@+id/slider_scrollSpeed"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:max="100"
-            android:progress="50"
-            android:progressTint="@color/text_color"
-            android:thumb="@drawable/slider_thumb" />
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
     </LinearLayout>
 
-    <!-- Record button at the bottom center -->
-    <FrameLayout
-        android:id="@+id/button_record"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:focusable="true"
+    <!-- Bottom control panel -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/controlPanel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/control_panel_background"
+        android:paddingTop="0dp"
+        android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView_recordButton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_gravity="center"
-            android:background="@drawable/record_button_idle" />
-
-        <TextView
-            android:id="@+id/textView_recordButtonLabel"
-            android:layout_width="wrap_content"
+        <!-- Bottom row with back button, record button, and gallery button -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_row"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:text="Start Recording"
-            android:textColor="@color/heading_color"
-            android:textSize="14sp" />
-    </FrameLayout>
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/control_row">
 
-    <!-- Thumbnail of last recording at bottom left -->
-    <ImageView
-        android:id="@+id/imageView_lastRecordingThumbnail"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="24dp"
-        android:background="@drawable/record_button_idle"
-        android:padding="2dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <!-- Back button -->
+            <FrameLayout
+                android:id="@+id/button_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/back_button_background"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Back"
+                    android:src="@drawable/ic_back_arrow" />
+            </FrameLayout>
+
+            <!-- Record button -->
+            <FrameLayout
+                android:id="@+id/button_record"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView_recordButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/record_button_idle"
+                    android:contentDescription="Record" />
+            </FrameLayout>
+
+            <!-- Gallery/Media button -->
+            <FrameLayout
+                android:id="@+id/button_media"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/control_button_background"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Media"
+                    android:src="@drawable/camera_rotate_icon" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Control row with sliders -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/control_row"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/nav_bar_border_color"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Opacity Control -->
+            <LinearLayout
+                android:id="@+id/opacity_control_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="Opacity"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <SeekBar
+                    android:id="@+id/slider_opacity"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="50"
+                    android:progressTint="#FFCC00"
+                    android:thumbTint="#FFCC00" />
+            </LinearLayout>
+
+            <!-- Font Size Control -->
+            <LinearLayout
+                android:id="@+id/font_size_control_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Font size"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Changed to ImageButton with minus icon -->
+                    <ImageButton
+                        android:id="@+id/button_fontSizeDecrease"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/font_size_button_background"
+                        android:src="@drawable/minus_icon"
+                        android:contentDescription="Decrease font size" />
+
+                    <!-- Changed to ImageButton with plus icon -->
+                    <ImageButton
+                        android:id="@+id/button_fontSizeIncrease"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/font_size_button_background"
+                        android:src="@drawable/plus_icon"
+                        android:contentDescription="Increase font size" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Speed Control -->
+            <LinearLayout
+                android:id="@+id/speed_control_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Speed"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <SeekBar
+                    android:id="@+id/slider_scrollSpeed"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="50"
+                    android:progressTint="#FFCC00"
+                    android:thumbTint="#FFCC00" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Loading placeholder message -->
     <TextView
@@ -204,7 +270,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Starting camera..."
-        android:textColor="@color/heading_color"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

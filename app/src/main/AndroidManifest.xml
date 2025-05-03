@@ -33,7 +33,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
+            <!-- Theme override for RecordFragment -->
+            <meta-data
+                android:name="android.app.default_fullscreen"
+                android:value="true" />
         </activity>
+        
+        <!-- Dedicated RecordActivity with NoActionBar theme -->
+        <activity
+            android:name=".RecordActivity"
+            android:theme="@style/Theme.TeleFlow.NoActionBar" 
+            android:exported="false" />
         
         <!-- FileProvider for sharing videos -->
         <provider

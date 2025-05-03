@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="176dp"
-    android:background="@color/primary"
+    android:background="@color/nav_bar_color"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="TeleFlow"
+        android:textColor="@color/active_color"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -26,6 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
         android:text="Streamline your teleprompter workflow" />
 
 </LinearLayout> 

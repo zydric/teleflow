@@ -9,7 +9,7 @@ import com.example.teleflow.data.dao.ScriptDao
 import com.example.teleflow.models.Recording
 import com.example.teleflow.models.Script
 
-@Database(entities = [Script::class, Recording::class], version = 1, exportSchema = false)
+@Database(entities = [Script::class, Recording::class], version = 2, exportSchema = false)
 abstract class TeleFlowDatabase : RoomDatabase() {
     
     abstract fun scriptDao(): ScriptDao

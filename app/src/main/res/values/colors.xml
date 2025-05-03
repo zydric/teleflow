@@ -13,4 +13,24 @@
     <color name="primary_dark">#FF000000</color> <!-- Status bar color -->
     <color name="accent">#FFCC00</color> <!-- Accents like selected items -->
     <color name="bottom_nav_color">#FF000000</color> <!-- Color for bottom navigation -->
+
+    <!-- Background color for all pages -->
+    <color name="background_color">#111827</color>
+
+    <!-- Nav bars, action bars, and cards -->
+    <color name="nav_bar_color">#1F2937</color>
+    <color name="card_color">#2B384A</color>
+    <color name="nav_bar_border_color">#374151</color>
+
+    <!-- Buttons, title of the logo in the home screen, active state of nav items -->
+    <color name="active_color">#FFCC00</color>
+
+    <!-- Headings and subheadings -->
+    <color name="heading_color">#E5E7EB</color>
+
+    <!-- Paragraph, text, icon color (inactive) -->
+    <color name="text_color">#9CA3AF</color>
+
+    <!-- Red for logout -->
+    <color name="logout_color">#EF4444</color>
 </resources>

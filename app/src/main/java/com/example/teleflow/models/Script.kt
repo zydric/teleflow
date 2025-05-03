@@ -8,5 +8,6 @@ data class Script(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
-    val content: String
+    val content: String,
+    val lastUsed: Long = 0 // Timestamp when the script was last used for recording (in milliseconds)
 ) 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     tools:context=".fragments.SettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Settings"
+            android:textColor="@color/heading_color"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="App Settings"
+            android:textColor="@color/heading_color"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            android:background="#DDDDDD"
+            android:background="@color/nav_bar_border_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_settings_title" />
@@ -52,6 +55,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:text="Dark Mode"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/dark_mode_switch"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +65,8 @@
             android:id="@+id/dark_mode_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:thumbTint="@color/active_color"
+            android:trackTint="@color/nav_bar_border_color"
             app:layout_constraintBottom_toBottomOf="@+id/dark_mode_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/dark_mode_label" />
@@ -72,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Font Size"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dark_mode_label" />
@@ -91,7 +98,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Small" />
+                android:text="Small"
+                android:textColor="@color/text_color"
+                android:buttonTint="@color/active_color" />
 
             <RadioButton
                 android:id="@+id/font_size_medium"
@@ -99,14 +108,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Medium" />
+                android:text="Medium"
+                android:textColor="@color/text_color"
+                android:buttonTint="@color/active_color" />
 
             <RadioButton
                 android:id="@+id/font_size_large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Large" />
+                android:text="Large"
+                android:textColor="@color/text_color"
+                android:buttonTint="@color/active_color" />
         </RadioGroup>
 
         <!-- Recording Settings Section -->
@@ -116,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Recording Settings"
+            android:textColor="@color/heading_color"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +140,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            android:background="#DDDDDD"
+            android:background="@color/nav_bar_border_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recording_settings_title" />
@@ -138,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Video Quality"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recording_settings_divider" />
@@ -147,6 +162,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:backgroundTint="@color/text_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/video_quality_label" />
@@ -159,6 +175,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:text="Auto-Save Recordings"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/auto_save_switch"
             app:layout_constraintStart_toStartOf="parent"
@@ -169,6 +186,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:thumbTint="@color/active_color"
+            android:trackTint="@color/nav_bar_border_color"
             app:layout_constraintBottom_toBottomOf="@+id/auto_save_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/auto_save_label" />
@@ -180,6 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="About"
+            android:textColor="@color/heading_color"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -190,7 +210,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            android:background="#DDDDDD"
+            android:background="@color/nav_bar_border_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/about_title" />
@@ -201,6 +221,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Version"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/about_divider" />
@@ -210,6 +231,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1.0.0"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/version_label" />
@@ -222,7 +244,7 @@
             android:layout_marginTop="16dp"
             android:text="Privacy Policy"
             android:textAllCaps="false"
-            android:textColor="?attr/colorAccent"
+            android:textColor="@color/active_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/version_label" />
 
@@ -233,7 +255,7 @@
             android:layout_height="wrap_content"
             android:text="Terms of Service"
             android:textAllCaps="false"
-            android:textColor="?attr/colorAccent"
+            android:textColor="@color/active_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/privacy_policy_button" />
 

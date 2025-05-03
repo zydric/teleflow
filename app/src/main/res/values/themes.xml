@@ -3,10 +3,41 @@
 
     <style name="Theme.TeleFlow" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Primary brand color -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/accent</item>
+        <item name="colorPrimary">@color/active_color</item>
+        <item name="colorPrimaryDark">@color/nav_bar_color</item>
+        <item name="colorAccent">@color/active_color</item>
+        
         <!-- Window/background colors -->
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/background_color</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/heading_color</item>
+        <item name="android:textColorSecondary">@color/text_color</item>
+        
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/nav_bar_color</item>
+        
+        <!-- Action bar styling -->
+        <item name="actionBarStyle">@style/TeleFlow.ActionBar</item>
+        
+        <!-- Bottom navigation styling -->
+        <item name="bottomNavigationStyle">@style/TeleFlow.BottomNavigation</item>
+    </style>
+    
+    <!-- ActionBar style -->
+    <style name="TeleFlow.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="background">@color/nav_bar_color</item>
+        <item name="titleTextStyle">@style/TeleFlow.ActionBar.TitleTextStyle</item>
+    </style>
+    
+    <style name="TeleFlow.ActionBar.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/heading_color</item>
+    </style>
+    
+    <!-- Bottom Navigation style -->
+    <style name="TeleFlow.BottomNavigation" parent="Widget.Design.BottomNavigationView">
+        <item name="android:background">@color/nav_bar_color</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color</item>
+        <item name="itemTextColor">@color/bottom_nav_item_color</item>
     </style>
 </resources>

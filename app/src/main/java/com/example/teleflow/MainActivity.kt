@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         drawerLayout = findViewById(R.id.drawer_layout)
         
         // Set up NavigationView
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+            val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
         
         // Properly set up NavController using NavHostFragment

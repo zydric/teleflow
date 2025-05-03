@@ -14,6 +14,7 @@ class ScriptViewModel(application: Application) : AndroidViewModel(application) 
     
     private val repository: TeleFlowRepository
     val allScripts: LiveData<List<Script>>
+    val recentlyUsedScripts: LiveData<List<Script>>
     
     init {
         val database = TeleFlowDatabase.getDatabase(application)
@@ -21,6 +22,7 @@ class ScriptViewModel(application: Application) : AndroidViewModel(application) 
         val recordingDao = database.recordingDao()
         repository = TeleFlowRepository(scriptDao, recordingDao)
         allScripts = repository.allScripts
+        recentlyUsedScripts = repository.recentlyUsedScripts
     }
     
     fun getScriptById(id: Int): LiveData<Script> {
@@ -37,6 +39,10 @@ class ScriptViewModel(application: Application) : AndroidViewModel(application) 
     
     fun deleteScript(script: Script) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteScript(script)
+    }
+    
+    fun updateScriptLastUsed(scriptId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateScriptLastUsed(scriptId)
     }
     
     // Function to initialize the database with sample scripts if needed

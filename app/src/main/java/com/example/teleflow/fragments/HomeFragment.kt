@@ -95,12 +95,12 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_recordingsFragment)
         }
         
-        // Observe the scripts from ViewModel
-        scriptViewModel.allScripts.observe(viewLifecycleOwner, Observer { scripts ->
+        // Observe the recently used scripts from ViewModel for the Recent Scripts section
+        scriptViewModel.recentlyUsedScripts.observe(viewLifecycleOwner, Observer { scripts ->
             // Cache the script list
             scriptsList = scripts
             
-            // Update the script items with the latest 3 scripts
+            // Update the script items with the most recent 3 scripts
             updateScriptItems()
         })
         
@@ -112,6 +112,7 @@ class HomeFragment : Fragment() {
     }
     
     private fun updateScriptItems() {
+        // Get the 3 most recently used scripts
         val recentScripts = scriptsList.take(3)
         
         // Clear all script items first

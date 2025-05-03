@@ -3,7 +3,7 @@
     <!-- Background color -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#E0E0E0" />
+            <solid android:color="@color/background_color" />
         </shape>
     </item>
     
@@ -15,7 +15,7 @@
             android:viewportWidth="24"
             android:viewportHeight="24">
             <path
-                android:fillColor="#9E9E9E"
+                android:fillColor="@color/active_color"
                 android:pathData="M8,5v14l11,-7z"/>
         </vector>
     </item>
@@ -28,7 +28,7 @@
             android:viewportWidth="24"
             android:viewportHeight="24">
             <path
-                android:fillColor="#9E9E9E"
+                android:fillColor="@color/text_color"
                 android:pathData="M17,10.5V7c0,-0.55 -0.45,-1 -1,-1H4c-0.55,0 -1,0.45 -1,1v10c0,0.55 0.45,1 1,1h12c0.55,0 1,-0.45 1,-1v-3.5l4,4v-11l-4,4z"/>
         </vector>
     </item>

@@ -45,12 +45,19 @@ class RecordingViewModel(application: Application) : AndroidViewModel(applicatio
     
     // Add a new recording based on a script ID and video URI
     fun addNewRecording(scriptId: Int, videoUri: String) = viewModelScope.launch(Dispatchers.IO) {
+        // Get current timestamp
+        val currentTime = System.currentTimeMillis()
+        
+        // Create and insert the recording
         val recording = Recording(
             id = 0, // Room will auto-generate the ID
             scriptId = scriptId,
             videoUri = videoUri,
-            date = System.currentTimeMillis()
+            date = currentTime
         )
         repository.insertRecording(recording)
+        
+        // Update the script's lastUsed timestamp
+        repository.updateScriptLastUsed(scriptId)
     }
 } 

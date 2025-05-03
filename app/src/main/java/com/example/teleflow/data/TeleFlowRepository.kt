@@ -12,6 +12,7 @@ class TeleFlowRepository(
 ) {
     // Scripts
     val allScripts: LiveData<List<Script>> = scriptDao.getAllScripts()
+    val recentlyUsedScripts: LiveData<List<Script>> = scriptDao.getRecentlyUsedScripts()
     
     suspend fun insertScript(script: Script): Long {
         return scriptDao.insert(script)
@@ -31,6 +32,11 @@ class TeleFlowRepository(
     
     suspend fun deleteScript(script: Script) {
         scriptDao.delete(script)
+    }
+    
+    suspend fun updateScriptLastUsed(id: Int) {
+        // Simply update the lastUsed timestamp directly
+        scriptDao.updateLastUsed(id, System.currentTimeMillis())
     }
     
     // Recordings

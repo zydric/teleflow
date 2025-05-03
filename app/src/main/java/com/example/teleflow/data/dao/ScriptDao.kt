@@ -14,8 +14,17 @@ interface ScriptDao {
     @Query("SELECT * FROM scripts ORDER BY title ASC")
     fun getAllScripts(): LiveData<List<Script>>
     
+    @Query("SELECT * FROM scripts ORDER BY lastUsed DESC")
+    fun getRecentlyUsedScripts(): LiveData<List<Script>>
+    
     @Query("SELECT * FROM scripts WHERE id = :id")
     fun getScriptById(id: Int): LiveData<Script>
+    
+    @Query("SELECT * FROM scripts WHERE id = :id")
+    suspend fun getScriptByIdSync(id: Int): Script?
+    
+    @Query("UPDATE scripts SET lastUsed = :timestamp WHERE id = :id")
+    suspend fun updateLastUsed(id: Int, timestamp: Long)
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(script: Script): Long

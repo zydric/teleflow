@@ -3,6 +3,11 @@
     <!-- Common spacing values -->
     <dimen name="grid_spacing">8dp</dimen>
     
+    <!-- Screen gutters/margins -->
+    <dimen name="screen_horizontal_margin">16dp</dimen>
+    <dimen name="screen_vertical_margin">16dp</dimen>
+    <dimen name="section_vertical_spacing">24dp</dimen>
+    
     <!-- Other dimensions can be added here as needed -->
     <dimen name="text_margin">16dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>

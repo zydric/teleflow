@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
 
 class ProfileFragment : Fragment() {
@@ -62,8 +63,8 @@ class ProfileFragment : Fragment() {
     private fun setupClickListeners() {
         // Edit Profile
         editProfileItem.setOnClickListener {
-            // This would navigate to profile editor in a real app
-            Toast.makeText(requireContext(), "Edit Profile coming soon", Toast.LENGTH_SHORT).show()
+            // Navigate to the Edit Profile screen
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
         }
         
         // Change Password

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".fragments.EditProfileFragment">
+
+    <!-- Content ScrollView (doesn't include buttons) -->
+    <ScrollView
+        android:id="@+id/content_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="16dp"
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toTopOf="@id/buttons_container"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:paddingBottom="80dp">
+
+            <!-- Profile Image Section -->
+            <FrameLayout
+                android:id="@+id/profile_image_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/profile_circle_background"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_person"
+                    app:tint="@color/heading_color"
+                    android:contentDescription="Profile picture" />
+
+                <ImageView
+                    android:id="@+id/camera_button"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@drawable/camera_button_background"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_camera"
+                    app:tint="@color/heading_color"
+                    android:contentDescription="Change profile picture" />
+            </FrameLayout>
+
+            <!-- Full Name Field -->
+            <TextView
+                android:id="@+id/name_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Full Name"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/profile_image_container" />
+
+            <EditText
+                android:id="@+id/name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edit_profile_input_background"
+                android:hint="Enter your full name"
+                android:inputType="textPersonName"
+                android:padding="16dp"
+                android:textColor="@color/heading_color"
+                android:textColorHint="@color/text_color"
+                android:textSize="16sp"
+                android:text="John Anderson"
+                app:layout_constraintTop_toBottomOf="@id/name_label" />
+
+            <!-- Email Field -->
+            <TextView
+                android:id="@+id/email_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Email"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/name_input" />
+
+            <EditText
+                android:id="@+id/email_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edit_profile_input_background"
+                android:hint="Enter your email address"
+                android:inputType="textEmailAddress"
+                android:padding="16dp"
+                android:textColor="@color/heading_color"
+                android:textColorHint="@color/text_color"
+                android:textSize="16sp"
+                android:text="john.anderson@gmail.com"
+                app:layout_constraintTop_toBottomOf="@id/email_label" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Action Buttons Container (fixed at bottom) -->
+    <LinearLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/background_color"
+        android:elevation="8dp"
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_primary_background"
+            android:padding="16dp"
+            android:text="Save Changes"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout> 

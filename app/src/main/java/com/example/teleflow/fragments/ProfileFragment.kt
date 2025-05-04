@@ -1,6 +1,5 @@
 package com.example.teleflow.fragments
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
@@ -92,13 +92,14 @@ class ProfileFragment : Fragment() {
     }
     
     private fun showLogoutConfirmation() {
-        AlertDialog.Builder(requireContext())
+        androidx.appcompat.app.AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Logout") { _, _ ->
+            .setPositiveButton("Yes") { _, _ ->
                 // Would perform actual logout in a real app
                 Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
-                // Normally would navigate to login screen
+                // Navigate to login fragment
+                findNavController().navigate(R.id.loginFragment)
             }
             .setNegativeButton("Cancel", null)
             .show()

@@ -22,6 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.example.teleflow.fragments.RecordFragment
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -68,6 +69,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         
+        // Change toggle color to white
+        toggle.drawerArrowDrawable.color = resources.getColor(R.color.heading_color, theme)
+        
         // Listen for destination changes to configure drawer toggle visibility
         navController.addOnDestinationChangedListener(this)
         
@@ -110,6 +114,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         aboutMenuItem = findViewById(R.id.nav_about_item)
         logoutMenuItem = findViewById(R.id.nav_logout_item)
         
+        // Set up header click to navigate to profile
+        val headerLayout = findViewById<View>(R.id.nav_header)
+        headerLayout.setOnClickListener {
+            navController.navigate(R.id.profileFragment)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        
         // Set click listeners for menu items
         recordingsMenuItem.setOnClickListener {
             navController.navigate(R.id.recordingsFragment)
@@ -149,11 +160,19 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     
     // Handle logout
     private fun handleLogout() {
-        // Implementation of logout functionality
-        // For example, clear user data and navigate to login screen
-        
-        // Navigate to login fragment
-        navController.navigate(R.id.loginFragment)
+        // Show confirmation dialog before logging out
+        AlertDialog.Builder(this, R.style.AlertDialogTheme)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Implementation of logout functionality
+                // For example, clear user data and navigate to login screen
+                
+                // Navigate to login fragment
+                navController.navigate(R.id.loginFragment)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     
     override fun onDestinationChanged(
@@ -251,6 +270,17 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(null) // Use default back arrow
+        
+        // Set back arrow color to white (use navigation_icon)
+        val navigationIconId = resources.getIdentifier("home", "id", "android")
+        if (navigationIconId != 0) {
+            val navigationIcon = findViewById<View>(navigationIconId)
+            navigationIcon?.post {
+                val drawable = (supportActionBar?.themedContext?.getDrawable(androidx.appcompat.R.drawable.abc_ic_ab_back_material))
+                drawable?.setTint(resources.getColor(R.color.heading_color, theme))
+                supportActionBar?.setHomeAsUpIndicator(drawable)
+            }
+        }
     }
     
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

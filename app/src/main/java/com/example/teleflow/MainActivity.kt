@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationView
 import com.example.teleflow.fragments.RecordFragment
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import android.widget.ImageView
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -44,6 +45,26 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         
         // Set up DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout)
+        
+        // Set drawer listener to refresh profile image when opened
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                // Not needed
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                // Refresh profile image when drawer is opened
+                updateUserProfile()
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                // Not needed
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                // Not needed
+            }
+        })
         
         // Set up custom drawer menu item clicks
         setupCustomDrawer()
@@ -151,11 +172,19 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun updateUserProfile() {
         val userNameTextView = findViewById<TextView>(R.id.user_name)
         val userEmailTextView = findViewById<TextView>(R.id.user_email)
+        val profileImageView = findViewById<ImageView>(R.id.profile_image)
         
         // In a real app, you would get this information from your user data repository
         // For now, we'll just use hardcoded values as specified in the requirements
-        userNameTextView.text = "John Anderson"
-        userEmailTextView.text = "john.anderson@example.com"
+        userNameTextView?.text = "John Anderson"
+        userEmailTextView?.text = "john.anderson@example.com"
+        
+        // Load profile image using ImageUtils
+        if (profileImageView != null) {
+            com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView)
+            // Remove any padding that would be present for the icon
+            profileImageView.setPadding(0, 0, 0, 0)
+        }
     }
     
     // Handle logout

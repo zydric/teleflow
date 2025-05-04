@@ -26,18 +26,31 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="24dp">
 
-                <ImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/profile_circle_background"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_person"
-                    android:tint="@color/heading_color"
+                <!-- Profile Image with Border -->
+                <FrameLayout
+                    android:id="@+id/profile_image_container"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="Profile picture" />
+                    app:layout_constraintTop_toTopOf="parent">
+                    
+                    <!-- Yellow Border -->
+                    <View
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:background="@drawable/profile_circle_background" />
+
+                    <!-- Profile Image -->
+                    <ImageView
+                        android:id="@+id/profile_image"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/profile_placeholder"
+                        android:contentDescription="Profile picture" />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/username_label"
@@ -50,7 +63,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_image_container" />
 
                 <TextView
                     android:id="@+id/email_label"

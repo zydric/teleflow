@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
+import com.example.teleflow.utils.ImageUtils
 
 class EditProfileFragment : Fragment() {
 
@@ -39,9 +41,21 @@ class EditProfileFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedImageUri = uri
-                profileImage.setImageURI(uri)
-                // Remove the icon tint when a real image is loaded
-                profileImage.colorFilter = null
+                try {
+                    // Use our utility method to create and display a circular bitmap immediately
+                    val circularBitmap = ImageUtils.createCircularBitmapFromUri(requireContext(), uri)
+                    if (circularBitmap != null) {
+                        profileImage.setImageBitmap(circularBitmap)
+                        // Remove any tint and padding
+                        profileImage.clearColorFilter()
+                        profileImage.setPadding(0, 0, 0, 0)
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("EditProfileFragment", "Error setting image URI", e)
+                    Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -67,6 +81,9 @@ class EditProfileFragment : Fragment() {
         emailInput = view.findViewById(R.id.email_input)
         saveButton = view.findViewById(R.id.save_button)
         cancelButton = view.findViewById(R.id.cancel_button)
+
+        // Load existing profile image if available
+        ImageUtils.loadProfileImage(requireContext(), profileImage)
 
         // Set up click listeners
         setupClickListeners()
@@ -98,8 +115,8 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun openImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickImageLauncher.launch(intent)
+        // Use the improved utility method to launch the image picker
+        ImageUtils.pickImageFromGallery(pickImageLauncher)
     }
 
     private fun validateInputs(): Boolean {
@@ -135,6 +152,14 @@ class EditProfileFragment : Fragment() {
         
         val name = nameInput.text.toString().trim()
         val email = emailInput.text.toString().trim()
+        
+        // Save the profile image
+        if (selectedImageUri != null) {
+            val saved = ImageUtils.saveProfileImage(requireContext(), selectedImageUri)
+            if (!saved) {
+                Toast.makeText(requireContext(), "Failed to save profile image", Toast.LENGTH_SHORT).show()
+            }
+        }
         
         // Update the user profile in the Profile fragment
         // This is just a placeholder for now since we don't have a real database

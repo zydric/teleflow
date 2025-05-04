@@ -30,11 +30,9 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_gravity="center"
-            android:padding="4dp"
             android:background="@drawable/profile_image_background"
-            android:src="@drawable/ic_person"
-            android:scaleType="centerInside"
-            app:tint="@color/heading_color"
+            android:src="@drawable/profile_placeholder"
+            android:scaleType="centerCrop"
             android:contentDescription="Profile picture" />
     </FrameLayout>
 

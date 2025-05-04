@@ -13,9 +13,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
+import com.example.teleflow.utils.ImageUtils
 
 class ProfileFragment : Fragment() {
 
+    private lateinit var profileImage: ImageView
     private lateinit var usernameLabel: TextView
     private lateinit var emailLabel: TextView
     private lateinit var editProfileItem: LinearLayout
@@ -40,6 +42,7 @@ class ProfileFragment : Fragment() {
         requireActivity().title = "Profile"
 
         // Initialize UI components
+        profileImage = view.findViewById(R.id.profile_image)
         usernameLabel = view.findViewById(R.id.username_label)
         emailLabel = view.findViewById(R.id.email_label)
         editProfileItem = view.findViewById(R.id.edit_profile_item)
@@ -56,8 +59,24 @@ class ProfileFragment : Fragment() {
         // Set app version
         appVersion.text = "2.1.0" // Hardcoded for now, would use dynamic versioning in production
 
+        // Load profile image
+        loadProfileImage()
+
         // Set up click listeners
         setupClickListeners()
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // Refresh profile image when returning to this fragment
+        loadProfileImage()
+    }
+    
+    private fun loadProfileImage() {
+        // Load profile image using the improved utility
+        ImageUtils.loadProfileImage(requireContext(), profileImage)
+        // Remove any padding that would be present for the icon
+        profileImage.setPadding(0, 0, 0, 0)
     }
     
     private fun setupClickListeners() {
@@ -98,6 +117,8 @@ class ProfileFragment : Fragment() {
             .setPositiveButton("Yes") { _, _ ->
                 // Would perform actual logout in a real app
                 Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
+                // Clear profile image on logout
+                ImageUtils.clearProfileImage(requireContext())
                 // Navigate to login fragment
                 findNavController().navigate(R.id.loginFragment)
             }

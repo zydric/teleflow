@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Circle -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/nav_bar_color" />
+        </shape>
+    </item>
+    
+    <!-- User Silhouette -->
+    <item
+        android:drawable="@drawable/ic_person"
+        android:gravity="center"
+        android:width="40dp"
+        android:height="40dp" />
+</layer-list> 

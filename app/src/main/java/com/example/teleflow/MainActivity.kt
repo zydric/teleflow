@@ -86,6 +86,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     navController.navigate(R.id.profileFragment)
                     true
                 }
+                R.id.nav_about -> {
+                    // Navigate to about developers fragment
+                    navController.navigate(R.id.aboutDevelopersFragment)
+                    true
+                }
                 else -> false
             }
         }
@@ -163,6 +168,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 bottomNavigationView.visibility = View.VISIBLE
                 handleNonHomeDestination()
             }
+            R.id.aboutDevelopersFragment -> {
+                supportActionBar?.title = "About Developers"
+                supportActionBar?.show()
+                bottomNavigationView.visibility = View.VISIBLE
+                handleNonHomeDestination()
+            }
         }
     }
     
@@ -188,8 +199,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 navController.navigate(R.id.settingsFragment)
             }
             R.id.nav_about -> {
-                // Handle about click
-                // For now, just close the drawer
+                // Navigate to about developers fragment
+                navController.navigate(R.id.aboutDevelopersFragment)
             }
         }
         

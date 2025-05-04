@@ -80,8 +80,8 @@ class ProfileFragment : Fragment() {
         
         // About TeleFlow
         aboutItem.setOnClickListener {
-            // This would navigate to an about screen in a real app
-            Toast.makeText(requireContext(), "About TeleFlow coming soon", Toast.LENGTH_SHORT).show()
+            // Navigate to the About Developers screen
+            findNavController().navigate(R.id.action_profileFragment_to_aboutDevelopersFragment)
         }
         
         // Version (no action, just display)

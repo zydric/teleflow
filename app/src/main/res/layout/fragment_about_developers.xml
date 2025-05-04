@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".fragments.AboutDevelopersFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Section Title -->
+            <TextView
+                android:id="@+id/section_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Meet the Team"
+                android:textColor="@color/active_color"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Developer Card 1 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/developer_card_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@color/card_color"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/section_title">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <!-- Developer Profile Image -->
+                    <ImageView
+                        android:id="@+id/developer_image_1"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/profile_circle_background"
+                        android:padding="3dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- Developer Name -->
+                    <TextView
+                        android:id="@+id/developer_name_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Zydric Abel"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/developer_image_1"
+                        app:layout_constraintTop_toTopOf="@+id/developer_image_1" />
+
+                    <!-- Developer Role -->
+                    <TextView
+                        android:id="@+id/developer_role_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Lead Android Developer"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/developer_image_1"
+                        app:layout_constraintTop_toBottomOf="@+id/developer_name_1" />
+
+                    <!-- Developer Bio -->
+                    <TextView
+                        android:id="@+id/developer_bio_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Passionate about creating intuitive mobile experiences. Specialized in Kotlin and Android architecture patterns."
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/developer_image_1" />
+
+                    <!-- Developer Email -->
+                    <ImageView
+                        android:id="@+id/email_icon_1"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="12dp"
+                        android:src="@drawable/ic_email"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/developer_bio_1" />
+
+                    <TextView
+                        android:id="@+id/developer_email_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="zydric.abel@cit.edu"
+                        android:textColor="@color/active_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/email_icon_1"
+                        app:layout_constraintStart_toEndOf="@+id/email_icon_1"
+                        app:layout_constraintTop_toTopOf="@+id/email_icon_1" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Developer Card 2 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/developer_card_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@color/card_color"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/developer_card_1">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <!-- Developer Profile Image -->
+                    <ImageView
+                        android:id="@+id/developer_image_2"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/profile_circle_background"
+                        android:padding="3dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- Developer Name -->
+                    <TextView
+                        android:id="@+id/developer_name_2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Myron Deandre Alia"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/developer_image_2"
+                        app:layout_constraintTop_toTopOf="@+id/developer_image_2" />
+
+                    <!-- Developer Role -->
+                    <TextView
+                        android:id="@+id/developer_role_2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="UI/UX Developer"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/developer_image_2"
+                        app:layout_constraintTop_toBottomOf="@+id/developer_name_2" />
+
+                    <!-- Developer Bio -->
+                    <TextView
+                        android:id="@+id/developer_bio_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Design enthusiast focusing on creating beautiful and functional user interfaces with Material Design principles."
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/developer_image_2" />
+
+                    <!-- Developer Email -->
+                    <ImageView
+                        android:id="@+id/email_icon_2"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="12dp"
+                        android:src="@drawable/ic_email"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/developer_bio_2" />
+
+                    <TextView
+                        android:id="@+id/developer_email_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="myrondeandre.alia@cit.edu"
+                        android:textColor="@color/active_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/email_icon_2"
+                        app:layout_constraintStart_toEndOf="@+id/email_icon_2"
+                        app:layout_constraintTop_toTopOf="@+id/email_icon_2" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- App Version Footer -->
+            <TextView
+                android:id="@+id/app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:text="TeleFlow v1.0.0"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/developer_card_2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

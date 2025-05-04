@@ -94,6 +94,13 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_profileFragment_to_aboutDevelopersFragment"
+            app:destination="@id/aboutDevelopersFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -143,4 +150,10 @@
             app:argType="integer"
             android:defaultValue="-1" />
     </fragment>
+
+    <fragment
+        android:id="@+id/aboutDevelopersFragment"
+        android:name="com.example.teleflow.fragments.AboutDevelopersFragment"
+        android:label="About Developers"
+        tools:layout="@layout/fragment_about_developers" />
 </navigation>

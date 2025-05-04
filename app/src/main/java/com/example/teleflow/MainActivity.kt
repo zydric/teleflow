@@ -103,8 +103,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         // Set custom title based on the current destination
         when (destination.id) {
-            R.id.loginFragment -> {
-                // Hide action bar and bottom navigation on login screen
+            R.id.loginFragment, R.id.registerFragment -> {
+                // Hide action bar and bottom navigation on authentication screens
                 supportActionBar?.hide()
                 bottomNavigationView.visibility = View.GONE
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)

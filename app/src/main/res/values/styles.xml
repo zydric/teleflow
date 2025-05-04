@@ -6,4 +6,21 @@
         <item name="itemIconTint">@color/white</item>
         <item name="itemTextColor">@color/white</item>
     </style>
+
+    <!-- Custom TextInputLayout style for login forms -->
+    <style name="Widget.TeleFlow.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/card_color</item>
+        <item name="boxStrokeColor">@color/nav_bar_border_color</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="hintTextColor">@color/text_color</item>
+        <item name="android:textColorHint">@color/text_color</item>
+        <item name="startIconTint">@color/text_color</item>
+        <item name="endIconTint">@color/text_color</item>
+        <item name="errorIconTint">@color/logout_color</item>
+        <item name="errorTextColor">@color/logout_color</item>
+    </style>
 </resources> 

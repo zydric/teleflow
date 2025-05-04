@@ -22,4 +22,18 @@
     <string name="invalid_email">Please enter a valid email address</string>
     <string name="password_required">Password is required</string>
     <string name="password_too_short">Password must be at least 6 characters</string>
+    
+    <!-- Registration Screen -->
+    <string name="create_account">Create account</string>
+    <string name="full_name_label">Full Name</string>
+    <string name="full_name_hint">Enter your name</string>
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="register_button">Register</string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="log_in_here">Log in here</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="name_required">Name is required</string>
+    <string name="password_criteria">Password must be at least 6 characters with a number and special character</string>
+    <string name="registration_successful">Registration successful</string>
 </resources>

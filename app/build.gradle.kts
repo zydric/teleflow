@@ -50,6 +50,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
+    // Add explicit kapt configuration for databinding
+    kapt {
+        correctErrorTypes = true
+        generateStubs = true
+    }
 }
 
 dependencies {

@@ -8,81 +8,102 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
-import com.example.teleflow.databinding.FragmentLoginBinding
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import android.widget.TextView
 
 class LoginFragment : Fragment() {
     
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var tilEmail: TextInputLayout
+    private lateinit var etEmail: TextInputEditText
+    private lateinit var tilPassword: TextInputLayout
+    private lateinit var etPassword: TextInputEditText
+    private lateinit var btnLogin: MaterialButton
+    private lateinit var tvForgotPassword: TextView
+    private lateinit var tvSignUp: TextView
     
     override fun onCreateView(
         inflater: LayoutInflater, 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_login, container, false)
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        // Initialize views
+        initViews(view)
+        
+        // Ensure action bar is hidden
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+        
         setupClickListeners()
         setupInputValidation()
     }
     
+    private fun initViews(view: View) {
+        tilEmail = view.findViewById(R.id.tilEmail)
+        etEmail = view.findViewById(R.id.etEmail)
+        tilPassword = view.findViewById(R.id.tilPassword)
+        etPassword = view.findViewById(R.id.etPassword)
+        btnLogin = view.findViewById(R.id.btnLogin)
+        tvForgotPassword = view.findViewById(R.id.tvForgotPassword)
+        tvSignUp = view.findViewById(R.id.tvSignUp)
+    }
+    
     private fun setupClickListeners() {
         // Login button click
-        binding.btnLogin.setOnClickListener {
+        btnLogin.setOnClickListener {
             if (validateInputs()) {
                 performLogin()
             }
         }
         
         // Forgot password click
-        binding.tvForgotPassword.setOnClickListener {
+        tvForgotPassword.setOnClickListener {
             // TODO: Navigate to forgot password screen
             Toast.makeText(context, "Forgot password functionality coming soon", Toast.LENGTH_SHORT).show()
         }
         
         // Sign up click
-        binding.tvSignUp.setOnClickListener {
-            // TODO: Navigate to registration screen
-            Toast.makeText(context, "Register functionality coming soon", Toast.LENGTH_SHORT).show()
+        tvSignUp.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
     
     private fun setupInputValidation() {
         // Email validation
-        binding.etEmail.addTextChangedListener(object : TextWatcher {
+        etEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().isNotEmpty() && !isValidEmail(s.toString())) {
-                    binding.tilEmail.error = getString(R.string.invalid_email)
+                    tilEmail.setError(getString(R.string.invalid_email))
                 } else {
-                    binding.tilEmail.error = null
+                    tilEmail.setError(null)
                 }
             }
         })
         
-        // Password validation
-        binding.etPassword.addTextChangedListener(object : TextWatcher {
+        // Password field watcher - only clear errors
+        etPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             
             override fun afterTextChanged(s: Editable?) {
-                if (s.toString().isNotEmpty() && s.toString().length < 6) {
-                    binding.tilPassword.error = getString(R.string.password_too_short)
-                } else {
-                    binding.tilPassword.error = null
-                }
+                // Only clear any errors
+                tilPassword.setError(null)
             }
         })
     }
@@ -95,35 +116,32 @@ class LoginFragment : Fragment() {
         var isValid = true
         
         // Validate email
-        val email = binding.etEmail.text.toString().trim()
+        val email = etEmail.text.toString().trim()
         if (email.isEmpty()) {
-            binding.tilEmail.error = getString(R.string.email_required)
+            tilEmail.setError(getString(R.string.email_required))
             isValid = false
         } else if (!isValidEmail(email)) {
-            binding.tilEmail.error = getString(R.string.invalid_email)
+            tilEmail.setError(getString(R.string.invalid_email))
             isValid = false
         } else {
-            binding.tilEmail.error = null
+            tilEmail.setError(null)
         }
         
-        // Validate password
-        val password = binding.etPassword.text.toString()
+        // Only check if password is empty
+        val password = etPassword.text.toString()
         if (password.isEmpty()) {
-            binding.tilPassword.error = getString(R.string.password_required)
-            isValid = false
-        } else if (password.length < 6) {
-            binding.tilPassword.error = getString(R.string.password_too_short)
+            tilPassword.setError(getString(R.string.password_required))
             isValid = false
         } else {
-            binding.tilPassword.error = null
+            tilPassword.setError(null)
         }
         
         return isValid
     }
     
     private fun performLogin() {
-        val email = binding.etEmail.text.toString().trim()
-        val password = binding.etPassword.text.toString()
+        val email = etEmail.text.toString().trim()
+        val password = etPassword.text.toString()
         
         // TODO: Implement actual authentication logic with backend
         
@@ -139,10 +157,5 @@ class LoginFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
-    }
-    
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 } 

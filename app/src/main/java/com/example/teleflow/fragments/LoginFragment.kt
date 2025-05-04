@@ -10,8 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
+import com.example.teleflow.viewmodels.AuthViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -26,6 +28,9 @@ class LoginFragment : Fragment() {
     private lateinit var btnLogin: MaterialButton
     private lateinit var tvForgotPassword: TextView
     private lateinit var tvSignUp: TextView
+    
+    // ViewModel for authentication
+    private val authViewModel: AuthViewModel by viewModels()
     
     override fun onCreateView(
         inflater: LayoutInflater, 
@@ -44,6 +49,13 @@ class LoginFragment : Fragment() {
         
         // Ensure action bar is hidden
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
+        
+        // Check if already logged in
+        if (authViewModel.isLoggedIn()) {
+            // Navigate to home screen
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            return
+        }
         
         setupClickListeners()
         setupInputValidation()
@@ -143,19 +155,26 @@ class LoginFragment : Fragment() {
         val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString()
         
-        // TODO: Implement actual authentication logic with backend
+        // Show loading indicator
+        btnLogin.isEnabled = false
+        btnLogin.text = getString(R.string.logging_in)
         
-        // For now, let's simulate a successful login
-        // In a real app, this would check against a database or web service
-        if (email == "user@example.com" && password == "password123") {
-            // Navigate to home screen upon successful login
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-        } else {
-            Toast.makeText(
-                context, 
-                "Invalid credentials. Try user@example.com / password123", 
-                Toast.LENGTH_LONG
-            ).show()
+        // Use the AuthViewModel to authenticate
+        authViewModel.login(email, password) { result ->
+            // Hide loading indicator
+            btnLogin.isEnabled = true
+            btnLogin.text = getString(R.string.login_button)
+            
+            if (result.success) {
+                // Login successful
+                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                
+                // Navigate to home screen
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            } else {
+                // Login failed, show error message
+                Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
+            }
         }
     }
 } 

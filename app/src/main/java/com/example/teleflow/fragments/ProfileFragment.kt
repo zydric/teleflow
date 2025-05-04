@@ -11,9 +11,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
 import com.example.teleflow.utils.ImageUtils
+import com.example.teleflow.viewmodels.AuthViewModel
 
 class ProfileFragment : Fragment() {
 
@@ -26,6 +28,9 @@ class ProfileFragment : Fragment() {
     private lateinit var aboutItem: LinearLayout
     private lateinit var versionItem: LinearLayout
     private lateinit var appVersion: TextView
+    
+    // ViewModel for authentication
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,19 +56,39 @@ class ProfileFragment : Fragment() {
         aboutItem = view.findViewById(R.id.about_item)
         versionItem = view.findViewById(R.id.version_item)
         appVersion = view.findViewById(R.id.app_version)
-
-        // Set placeholder user data
-        usernameLabel.text = "John Anderson"
-        emailLabel.text = "john.anderson@email.com"
         
+        // Check if user is logged in
+        if (!authViewModel.isLoggedIn()) {
+            // Redirect to login screen if not logged in
+            findNavController().navigate(R.id.loginFragment)
+            return
+        }
+
         // Set app version
-        appVersion.text = "2.1.0" // Hardcoded for now, would use dynamic versioning in production
+        appVersion.text = "1.0.0" // Hardcoded for now, would use dynamic versioning in production
 
         // Load profile image
         loadProfileImage()
+        
+        // Observe current user data
+        observeUserData()
 
         // Set up click listeners
         setupClickListeners()
+    }
+    
+    private fun observeUserData() {
+        authViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                // Update UI with user data
+                usernameLabel.text = user.fullName
+                emailLabel.text = user.email
+            } else {
+                // Default values if user is null (should not happen)
+                usernameLabel.text = "User"
+                emailLabel.text = "user@example.com"
+            }
+        }
     }
     
     override fun onResume() {
@@ -115,10 +140,14 @@ class ProfileFragment : Fragment() {
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
-                // Would perform actual logout in a real app
+                // Perform logout using AuthViewModel
+                authViewModel.logout()
+                
                 Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
+                
                 // Clear profile image on logout
                 ImageUtils.clearProfileImage(requireContext())
+                
                 // Navigate to login fragment
                 findNavController().navigate(R.id.loginFragment)
             }

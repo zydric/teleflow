@@ -13,14 +13,21 @@ import androidx.room.PrimaryKey
             parentColumns = ["id"],
             childColumns = ["scriptId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = User::class,
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("scriptId")]
+    indices = [Index("scriptId"), Index("userId")]
 )
 data class Recording(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val scriptId: Int,
+    val userId: Int,
     val videoUri: String,
     val date: Long
 ) 

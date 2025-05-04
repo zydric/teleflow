@@ -1,23 +1,41 @@
 package com.example.teleflow
 
 import android.app.Application
+import com.example.teleflow.auth.AuthManager
 import com.example.teleflow.data.TeleFlowDatabase
+import com.example.teleflow.data.TeleFlowRepository
 import com.example.teleflow.models.Script
+import com.example.teleflow.models.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
 import java.util.Date
 
 class TeleFlowApplication : Application() {
     
     private val applicationScope = CoroutineScope(SupervisorJob())
     private lateinit var database: TeleFlowDatabase
+    private lateinit var repository: TeleFlowRepository
+    
+    // Expose AuthManager to be accessed from activities/fragments
+    lateinit var authManager: AuthManager
     
     override fun onCreate() {
         super.onCreate()
         
         // Initialize Room database
         database = TeleFlowDatabase.getDatabase(this)
+        
+        // Initialize repository
+        repository = TeleFlowRepository.getInstance(
+            database.scriptDao(),
+            database.recordingDao(),
+            database.userDao()
+        )
+        
+        // Initialize AuthManager
+        authManager = AuthManager(this)
         
         // Populate the database with sample data if needed
         applicationScope.launch {
@@ -26,67 +44,79 @@ class TeleFlowApplication : Application() {
     }
     
     private suspend fun initializeDatabase() {
-        val scriptDao = database.scriptDao()
+        // Check if there are any users
+        val userCount = repository.getUserCount()
         
-        // Check if the database is empty
-        val scriptCount = scriptDao.getScriptCount()
-        
-        // Only insert sample data if the database is empty
-        if (scriptCount == 0) {
-            // Current time for base timestamp
-            val now = Date()
-            
-            // Create dates for different times
-            val fourHoursAgo = Date(now.time - (4 * 3600000))
-            val threeHoursAgo = Date(now.time - (3 * 3600000))
-            val twoHoursAgo = Date(now.time - (2 * 3600000))
-            val oneHourAgo = Date(now.time - (1 * 3600000))
-            
-            // Create sample scripts with descending lastUsedAt timestamps
-            // This will make them appear in reverse order in the recent scripts list
-            val sampleScripts = listOf(
-                Script(
-                    id = 0, // Room will auto-generate the ID
-                    title = "Product Introduction",
-                    content = "Hello everyone! Today I'm excited to introduce our latest product. This innovative solution addresses many of the challenges our customers have been facing...",
-                    createdAt = fourHoursAgo,
-                    lastModifiedAt = fourHoursAgo,
-                    lastUsedAt = fourHoursAgo
-                ),
-                Script(
-                    id = 0,
-                    title = "Weekly Update",
-                    content = "Welcome to this week's update. We've made significant progress on several key initiatives. First, the development team completed the new payment gateway integration...",
-                    createdAt = twoHoursAgo,
-                    lastModifiedAt = twoHoursAgo,
-                    lastUsedAt = twoHoursAgo
-                ),
-                Script(
-                    id = 0,
-                    title = "Tutorial: Getting Started",
-                    content = "Welcome to this tutorial where I'll walk you through getting started with our platform. The first step is to create your account by clicking the sign-up button...",
-                    createdAt = threeHoursAgo,
-                    lastModifiedAt = threeHoursAgo,
-                    lastUsedAt = threeHoursAgo
-                ),
-                Script(
-                    id = 0,
-                    title = "Social Media Promo",
-                    content = "Hey followers! Don't miss our limited-time offer - 30% off all premium subscriptions when you use code SUMMER30 at checkout. This deal ends Friday!...",
-                    createdAt = now,
-                    lastModifiedAt = now,
-                    lastUsedAt = now
-                ),
-                Script(
-                    id = 0,
-                    title = "Meeting Presentation",
-                    content = "Good morning team! Today's agenda includes a review of Q2 results, discussion of upcoming product features, and team assignments for the next sprint...",
-                    createdAt = oneHourAgo,
-                    lastModifiedAt = oneHourAgo,
-                    lastUsedAt = oneHourAgo
-                )
+        // If no users exist, create a default user
+        if (userCount == 0) {
+            // Create default user
+            val defaultUser = User(
+                id = 0, // Room will auto-generate
+                email = "default@teleflow.app",
+                fullName = "Default User",
+                passwordHash = hashPassword("defaultpass"),
+                profileImagePath = null,
+                createdAt = Date()
             )
-            scriptDao.insertAll(sampleScripts)
+            
+            // Insert the default user
+            val userId = repository.insertUser(defaultUser).toInt()
+            
+            // Now add sample scripts for this user
+            addSampleScripts(userId)
+        } else {
+            // Check if there are scripts using the scriptDao directly
+            val scriptCount = database.scriptDao().getScriptCount()
+            
+            // If there are users but no scripts, we might need to add scripts
+            // for the default user (ID 1) which was created in migration
+            if (scriptCount == 0) {
+                addSampleScripts(1) // Default user ID is 1
+            }
         }
+    }
+    
+    private suspend fun addSampleScripts(userId: Int) {
+        // Check if the user already has scripts (avoid duplicates)
+        val scriptCount = repository.getUserScriptCount(userId)
+        if (scriptCount > 0) {
+            // User already has scripts, don't create a welcome script
+            return
+        }
+        
+        // Current time for base timestamp
+        val now = Date()
+        
+        // Create a welcome script for the default user
+        val welcomeScript = Script(
+            id = 0, // Room will auto-generate the ID
+            userId = userId,
+            title = "Welcome to TeleFlow",
+            content = "Thank you for choosing TeleFlow as your teleprompter app! This is a sample script to help you get started.\n\n" +
+                    "With TeleFlow, you can:\n" +
+                    "• Create and edit scripts for your recordings\n" +
+                    "• Record videos while reading your script\n" +
+                    "• Organize your scripts and recordings\n\n" +
+                    "To get started, you can edit this script or create a new one from the scripts tab. " +
+                    "When you're ready to record, simply open a script and tap the record button.\n\n" +
+                    "We hope you enjoy using TeleFlow!",
+            createdAt = now,
+            lastModifiedAt = now,
+            lastUsedAt = now
+        )
+        
+        // Insert the welcome script
+        repository.insertScript(welcomeScript)
+    }
+    
+    /**
+     * Hash a password using SHA-256
+     * Note: In a production app, you might want to use more secure methods like BCrypt
+     */
+    private fun hashPassword(password: String): String {
+        val bytes = password.toByteArray()
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return digest.fold("") { str, it -> str + "%02x".format(it) }
     }
 } 

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:paddingTop="64dp"
+        android:paddingTop="40dp"
         android:paddingBottom="32dp">
 
         <!-- Logo and App Name -->
@@ -149,6 +149,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="32dp"
             android:text="@string/login_button"
+            android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"

@@ -18,9 +18,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
 import com.example.teleflow.utils.ImageUtils
+import com.example.teleflow.viewmodels.AuthViewModel
 
 class EditProfileFragment : Fragment() {
 
@@ -33,6 +35,9 @@ class EditProfileFragment : Fragment() {
 
     // URI for the selected profile image
     private var selectedImageUri: Uri? = null
+    
+    // ViewModel for authentication
+    private val authViewModel: AuthViewModel by viewModels()
 
     // Activity result launcher for image picking
     private val pickImageLauncher = registerForActivityResult(
@@ -73,6 +78,13 @@ class EditProfileFragment : Fragment() {
 
         // Set action bar title
         requireActivity().title = "Edit Profile"
+        
+        // Check if user is logged in
+        if (!authViewModel.isLoggedIn()) {
+            // Redirect to login screen if not logged in
+            findNavController().navigate(R.id.loginFragment)
+            return
+        }
 
         // Initialize UI components
         profileImage = view.findViewById(R.id.profile_image)
@@ -82,11 +94,24 @@ class EditProfileFragment : Fragment() {
         saveButton = view.findViewById(R.id.save_button)
         cancelButton = view.findViewById(R.id.cancel_button)
 
-        // Load existing profile image if available
-        ImageUtils.loadProfileImage(requireContext(), profileImage)
+        // Load existing profile data
+        loadProfileData()
 
         // Set up click listeners
         setupClickListeners()
+    }
+    
+    private fun loadProfileData() {
+        // Load existing profile image if available
+        ImageUtils.loadProfileImage(requireContext(), profileImage)
+        
+        // Load user data from ViewModel
+        authViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                nameInput.setText(user.fullName)
+                emailInput.setText(user.email)
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -147,25 +172,39 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun saveProfileChanges() {
-        // In a real app, this would save the user profile to a database or server
-        // For now, we just show a success message and navigate back
+        // Show loading state
+        saveButton.isEnabled = false
+        saveButton.text = "Saving..."
         
         val name = nameInput.text.toString().trim()
         val email = emailInput.text.toString().trim()
+        
+        // Image path to save
+        var imagePath: String? = null
         
         // Save the profile image
         if (selectedImageUri != null) {
             val saved = ImageUtils.saveProfileImage(requireContext(), selectedImageUri)
             if (!saved) {
                 Toast.makeText(requireContext(), "Failed to save profile image", Toast.LENGTH_SHORT).show()
+            } else {
+                imagePath = selectedImageUri.toString()
             }
         }
         
-        // Update the user profile in the Profile fragment
-        // This is just a placeholder for now since we don't have a real database
-        Toast.makeText(requireContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show()
-        
-        // Navigate back to the profile page
-        findNavController().popBackStack()
+        // Update the user profile using the AuthViewModel
+        authViewModel.updateUserProfile(name, email, imagePath) { result ->
+            // Restore button state
+            saveButton.isEnabled = true
+            saveButton.text = "Save changes"
+            
+            // Show result
+            Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+            
+            if (result.success) {
+                // Navigate back to the profile page
+                findNavController().popBackStack()
+            }
+        }
     }
 } 

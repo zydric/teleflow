@@ -51,4 +51,11 @@
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/text_color</item>
     </style>
+    
+    <!-- Style for consistent helper/error text in TextInputLayouts -->
+    <style name="HelperTextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.03</item>
+    </style>
 </resources> 

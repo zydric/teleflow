@@ -5,8 +5,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -113,6 +115,10 @@ class RecordFragment : Fragment() {
     private var scrollSpeed = 50 // Default value
     private lateinit var autoScrollRunnable: Runnable
     
+    // Script overlay settings
+    private var opacity = 75 // Default opacity
+    private var selectedColorIndex = 0 // Default color (white)
+    
     // ViewModels
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val recordingViewModel: RecordingViewModel by viewModels()
@@ -180,22 +186,58 @@ class RecordFragment : Fragment() {
         // Ensure we have immersive mode
         setImmersiveMode()
 
-        // Get the script data from arguments
-        arguments?.let { args ->
-            scriptTitle = args.getString("scriptTitle") ?: "Untitled Script"
-            scriptContent = args.getString("scriptContent") ?: "No content provided"
-            scriptId = args.getInt("scriptId", -1)
-        }
-
+        // Get script data from arguments
+        scriptTitle = arguments?.getString("title") ?: "Untitled Script"
+        scriptContent = arguments?.getString("content") ?: "No content"
+        scriptId = arguments?.getInt("scriptId", -1) ?: -1
+        
+        // Load script overlay settings from shared preferences
+        loadScriptOverlaySettings()
+        
         // Initialize UI components
+        initializeUI(view)
+        
+        // Initialize camera executor
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        
+        // Request camera and audio permissions before starting the camera
+        requestCameraPermissions()
+    }
+    
+    private fun loadScriptOverlaySettings() {
+        // Get shared preferences
+        val prefs = requireActivity().getSharedPreferences("teleflow_settings", Context.MODE_PRIVATE)
+        
+        // Load font size
+        val savedFontSize = prefs.getInt("font_size", 18)
+        currentFontSize = savedFontSize.toFloat()
+        
+        // Load font color index (will be applied in initializeUI)
+        selectedColorIndex = prefs.getInt("font_color_index", 0)
+        
+        // Load opacity
+        val savedOpacity = prefs.getInt("opacity", 75)
+        opacity = savedOpacity
+        
+        // Load scroll speed
+        val savedScrollSpeed = prefs.getInt("scroll_speed", 50)
+        scrollSpeed = savedScrollSpeed
+    }
+    
+    private fun initializeUI(view: View) {
+        // Find views
         viewFinder = view.findViewById(R.id.previewView)
-        scriptOverlayTextView = view.findViewById(R.id.textView_scriptOverlay)
-        scriptScrollView = view.findViewById(R.id.scrollView_script)
         recordButton = view.findViewById(R.id.button_record)
-        recordButtonImage = view.findViewById(R.id.imageView_recordButton)
-        timerTextView = view.findViewById(R.id.textView_timer)
         backButton = view.findViewById(R.id.button_back)
         mediaButton = view.findViewById(R.id.button_media)
+        
+        // Script overlay elements
+        scriptScrollView = view.findViewById(R.id.scrollView_script)
+        scriptOverlayTextView = view.findViewById(R.id.textView_scriptOverlay)
+        timerTextView = view.findViewById(R.id.textView_timer)
+        
+        // Set the record button image reference
+        recordButtonImage = view.findViewById(R.id.imageView_recordButton)
         
         // Control components
         opacitySlider = view.findViewById(R.id.slider_opacity)
@@ -205,28 +247,33 @@ class RecordFragment : Fragment() {
         scrollSpeedSlider = view.findViewById(R.id.slider_scrollSpeed)
         speedValueTextView = view.findViewById(R.id.tv_speed_value)
         
-        // Initial slider position and text values
+        // Apply the loaded settings to UI elements
+        
+        // Set font size
+        scriptOverlayTextView.textSize = currentFontSize
+        
+        // Set font size slider position (map from actual font size to slider position)
         fontSizeSlider.progress = ((currentFontSize - minFontSize) / (maxFontSize - minFontSize) * fontSizeSlider.max).toInt()
         fontSizeValueTextView.text = currentFontSize.toInt().toString()
         
-        // Set initial opacity value text
-        opacityValueTextView.text = "${opacitySlider.progress}%"
+        // Set font color based on the index
+        setTextColor(selectedColorIndex)
         
-        // Set initial speed value text with multiplier
-        val initialSpeedMultiplier = when {
-            scrollSpeed < 20 -> "0.25x"
-            scrollSpeed < 40 -> "0.5x"
-            scrollSpeed in 40..60 -> "1x"
-            scrollSpeed < 80 -> "1.5x"
-            else -> "2x"
-        }
-        speedValueTextView.text = initialSpeedMultiplier
+        // Set opacity
+        opacitySlider.progress = opacity
+        opacityValueTextView.text = "${opacity}%"
+        // Apply opacity to script background
+        val backgroundOpacity = 0.1f + (opacity / 100f * 0.8f)
+        scriptScrollView.background.alpha = (backgroundOpacity * 255).toInt()
+        
+        // Set scroll speed
+        scrollSpeedSlider.progress = scrollSpeed
+        // Update speed value text with multiplier
+        val speedMultiplier = getSpeedMultiplierText(scrollSpeed)
+        speedValueTextView.text = speedMultiplier
         
         // Display the script content in the overlay
         scriptOverlayTextView.text = "$scriptTitle\n\n$scriptContent"
-        
-        // Set initial font size
-        scriptOverlayTextView.textSize = currentFontSize
         
         // Hide timer by default
         timerTextView.visibility = View.GONE
@@ -252,24 +299,46 @@ class RecordFragment : Fragment() {
                 if (isAutoScrolling && isRecording) {
                     // Calculate scroll speed based on slider value as a multiplier
                     // Map 0-100 slider value to appropriate scroll amount
-                    val scrollAmount = when {
-                        scrollSpeed < 20 -> 1  // 0.25x
-                        scrollSpeed < 40 -> 2  // 0.5x
-                        scrollSpeed in 40..60 -> 4  // 1x (base speed)
-                        scrollSpeed < 80 -> 6  // 1.5x
-                        else -> 8  // 2x
-                    }
+                    val scrollAmount = getScrollAmount(scrollSpeed)
                     scriptScrollView.smoothScrollBy(0, scrollAmount)
                 }
                 handler.postDelayed(this, 50) // Adjust timing for smoother scrolling
             }
         }
+    }
+    
+    private fun getSpeedMultiplierText(progress: Int): String {
+        return when {
+            progress < 20 -> "0.25x"
+            progress < 40 -> "0.5x"
+            progress in 40..60 -> "1x"
+            progress < 80 -> "1.5x"
+            else -> "2x"
+        }
+    }
+    
+    private fun getScrollAmount(progress: Int): Int {
+        return when {
+            progress < 20 -> 1  // 0.25x
+            progress < 40 -> 2  // 0.5x
+            progress in 40..60 -> 4  // 1x (base speed)
+            progress < 80 -> 6  // 1.5x
+            else -> 8  // 2x
+        }
+    }
+    
+    private fun setTextColor(colorIndex: Int) {
+        val hexColor = when (colorIndex) {
+            0 -> "#FFFFFF" // White
+            1 -> "#FFCC00" // Orange/Gold
+            2 -> "#3B82F6" // Blue
+            3 -> "#10B981" // Green
+            4 -> "#EF4444" // Red
+            else -> "#FFFFFF" // Default white
+        }
         
-        // Initialize camera executor
-        cameraExecutor = Executors.newSingleThreadExecutor()
-        
-        // Request camera and audio permissions before starting the camera
-        requestCameraPermissions()
+        val color = Color.parseColor(hexColor)
+        scriptOverlayTextView.setTextColor(color)
     }
     
     private fun setupClickListeners() {
@@ -344,13 +413,7 @@ class RecordFragment : Fragment() {
                 }
                 
                 // Update speed text with multiplier value
-                val speedMultiplier = when {
-                    progress < 20 -> "0.25x"
-                    progress < 40 -> "0.5x"
-                    progress in 40..60 -> "1x"
-                    progress < 80 -> "1.5x"
-                    else -> "2x"
-                }
+                val speedMultiplier = getSpeedMultiplierText(progress)
                 speedValueTextView.text = speedMultiplier
             }
 

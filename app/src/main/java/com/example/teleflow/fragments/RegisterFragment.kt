@@ -12,8 +12,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
+import com.example.teleflow.viewmodels.AuthViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -32,6 +34,9 @@ class RegisterFragment : Fragment() {
     private lateinit var etPassword: TextInputEditText
     private lateinit var tilConfirmPassword: TextInputLayout
     private lateinit var etConfirmPassword: TextInputEditText
+    
+    // ViewModel for authentication
+    private val authViewModel: AuthViewModel by viewModels()
     
     override fun onCreateView(
         inflater: LayoutInflater, 
@@ -226,16 +231,26 @@ class RegisterFragment : Fragment() {
     }
     
     private fun performRegistration() {
-        val name = etFullName.text.toString().trim()
+        val fullName = etFullName.text.toString().trim()
         val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString()
         
-        // TODO: Implement actual user registration logic with backend
+        // Show loading indicator
+        btnRegister.isEnabled = false
+        btnRegister.text = getString(R.string.registering)
         
-        // For now, simulate a successful registration
-        Toast.makeText(context, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show()
-        
-        // Navigate back to login screen
-        findNavController().navigateUp()
+        // Use the AuthViewModel to register
+        authViewModel.register(email, fullName, password) { result ->
+            // Hide loading indicator
+            btnRegister.isEnabled = true
+            btnRegister.text = getString(R.string.register_button)
+            
+            Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+            
+            if (result.success) {
+                // Registration successful, navigate to home screen
+                findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
+            }
+        }
     }
 } 

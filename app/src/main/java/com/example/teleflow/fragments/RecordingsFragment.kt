@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.teleflow.R
 import com.example.teleflow.adapters.RecordingAdapter
 import com.example.teleflow.models.Recording
+import com.example.teleflow.viewmodels.AuthViewModel
 import com.example.teleflow.viewmodels.RecordingViewModel
 import com.example.teleflow.viewmodels.ScriptViewModel
 
@@ -26,6 +27,7 @@ class RecordingsFragment : Fragment() {
     
     private val recordingViewModel: RecordingViewModel by viewModels()
     private val scriptViewModel: ScriptViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +39,13 @@ class RecordingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Check if user is logged in
+        if (!authViewModel.isLoggedIn()) {
+            // Redirect to login screen if not logged in
+            findNavController().navigate(R.id.loginFragment)
+            return
+        }
 
         // Set up recordings RecyclerView with GridLayoutManager
         recordingsRecyclerView = view.findViewById(R.id.recyclerView_recordings_list)
@@ -69,8 +78,8 @@ class RecordingsFragment : Fragment() {
         )
         recordingsRecyclerView.adapter = recordingAdapter
         
-        // Observe the recordings from ViewModel
-        recordingViewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
+        // Observe the user recordings from ViewModel instead of all recordings
+        recordingViewModel.userRecordings.observe(viewLifecycleOwner, Observer { recordings ->
             recordingAdapter.updateData(recordings)
             view.findViewById<View>(R.id.textView_no_recordings).visibility = 
                 if (recordings.isEmpty()) View.VISIBLE else View.GONE

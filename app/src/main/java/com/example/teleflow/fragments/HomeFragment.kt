@@ -23,6 +23,7 @@ import com.example.teleflow.RecordActivity
 import com.example.teleflow.adapters.RecordingAdapter
 import com.example.teleflow.models.Recording
 import com.example.teleflow.models.Script
+import com.example.teleflow.viewmodels.AuthViewModel
 import com.example.teleflow.viewmodels.RecordingViewModel
 import com.example.teleflow.viewmodels.ScriptViewModel
 
@@ -38,6 +39,7 @@ class HomeFragment : Fragment() {
     
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val recordingViewModel: RecordingViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
     // Cache for script data
     private var scriptsList = listOf<Script>()
@@ -52,6 +54,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Check if user is logged in
+        if (!authViewModel.isLoggedIn()) {
+            // Redirect to login screen if not logged in
+            findNavController().navigate(R.id.loginFragment)
+            return
+        }
 
         // Find the script item views
         scriptItem1 = view.findViewById(R.id.script_item_1)
@@ -98,7 +107,7 @@ class HomeFragment : Fragment() {
         }
         
         // Observe the recently used scripts from ViewModel for the Recent Scripts section
-        scriptViewModel.recentlyUsedScripts.observe(viewLifecycleOwner, Observer { scripts ->
+        scriptViewModel.userRecentScripts.observe(viewLifecycleOwner, Observer { scripts ->
             // Cache the script list
             scriptsList = scripts
             
@@ -106,10 +115,10 @@ class HomeFragment : Fragment() {
             updateScriptItems()
         })
         
-        // Observe the recordings from ViewModel
-        recordingViewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
-            // Update the adapter with the latest 5 recordings
-            recordingAdapter.updateData(recordings.take(5))
+        // Observe the recordings from ViewModel - use user-specific recordings
+        recordingViewModel.userRecentRecordings.observe(viewLifecycleOwner, Observer { recordings ->
+            // Update the adapter with the recordings (already limited in the ViewModel)
+            recordingAdapter.updateData(recordings)
         })
     }
     

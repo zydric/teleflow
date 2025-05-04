@@ -185,5 +185,9 @@
         android:name="com.example.teleflow.fragments.RegisterFragment"
         android:label="Register"
         app:theme="@style/Theme.TeleFlow.Login"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

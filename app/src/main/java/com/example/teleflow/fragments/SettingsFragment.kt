@@ -222,6 +222,9 @@ class SettingsFragment : Fragment() {
     
     private fun saveSetting(key: String, value: Int) {
         prefs.edit().putInt(key, value).apply()
+        
+        // Log the saved setting to help with debugging
+        android.util.Log.d("SettingsFragment", "Saved setting: $key = $value")
     }
     
     private fun getColorFromIndex(index: Int): String {

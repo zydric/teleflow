@@ -117,6 +117,37 @@ object ImageUtils {
     }
     
     /**
+     * Load the profile image from a specified path and set it to the ImageView
+     * This is used for loading user-specific profile images
+     */
+    fun loadProfileImage(context: Context, imageView: ImageView, customImagePath: String?) {
+        try {
+            if (customImagePath != null) {
+                // Load image from the custom path
+                val imageFile = File(customImagePath)
+                if (imageFile.exists()) {
+                    // Load and display the circular bitmap
+                    val bitmap = BitmapFactory.decodeFile(customImagePath)
+                    val circularBitmap = getCircularBitmap(bitmap)
+                    imageView.setImageBitmap(circularBitmap)
+                    
+                    // Clear any tint
+                    imageView.clearColorFilter()
+                    return
+                }
+            }
+            
+            // If no custom image path provided or it doesn't exist, fall back to the default method
+            loadProfileImage(context, imageView)
+            
+        } catch (e: Exception) {
+            Log.e("ImageUtils", "Error loading custom profile image", e)
+            // Fall back to the default method
+            loadProfileImage(context, imageView)
+        }
+    }
+    
+    /**
      * Get bitmap from URI with proper scaling
      */
     private fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
@@ -153,7 +184,7 @@ object ImageUtils {
     /**
      * Create a circular bitmap from a source bitmap
      */
-    private fun getCircularBitmap(bitmap: Bitmap): Bitmap {
+    fun getCircularBitmap(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
         val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

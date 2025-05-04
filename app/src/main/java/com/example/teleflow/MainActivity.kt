@@ -24,6 +24,7 @@ import com.example.teleflow.fragments.RecordFragment
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import android.widget.ImageView
+import com.example.teleflow.TeleFlowApplication
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,6 +39,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private lateinit var settingsMenuItem: View
     private lateinit var aboutMenuItem: View
     private lateinit var logoutMenuItem: View
+    
+    // Views for the user profile in drawer header
+    private lateinit var userNameTextView: TextView
+    private lateinit var userEmailTextView: TextView
+    private lateinit var profileImageView: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +74,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         
         // Set up custom drawer menu item clicks
         setupCustomDrawer()
+        
+        // Set up observer for user profile changes
+        observeUserProfileChanges()
         
         // Properly set up NavController using NavHostFragment
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -135,6 +144,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         aboutMenuItem = findViewById(R.id.nav_about_item)
         logoutMenuItem = findViewById(R.id.nav_logout_item)
         
+        // Initialize header views
+        userNameTextView = findViewById(R.id.user_name)
+        userEmailTextView = findViewById(R.id.user_email)
+        profileImageView = findViewById(R.id.profile_image)
+        
         // Set up header click to navigate to profile
         val headerLayout = findViewById<View>(R.id.nav_header)
         headerLayout.setOnClickListener {
@@ -168,21 +182,43 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         updateUserProfile()
     }
     
+    // Observe changes to user profile data
+    private fun observeUserProfileChanges() {
+        val authManager = (application as TeleFlowApplication).authManager
+        authManager.currentUser.observe(this) { user ->
+            if (user != null) {
+                // Update drawer header with new user data
+                userNameTextView.text = user.fullName
+                userEmailTextView.text = user.email
+                
+                // Load profile image
+                com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView, user.profileImagePath)
+                profileImageView.setPadding(0, 0, 0, 0)
+            }
+        }
+    }
+    
     // Update user profile information in the drawer header
     private fun updateUserProfile() {
-        val userNameTextView = findViewById<TextView>(R.id.user_name)
-        val userEmailTextView = findViewById<TextView>(R.id.user_email)
-        val profileImageView = findViewById<ImageView>(R.id.profile_image)
+        // Get user information from AuthManager
+        val authManager = (application as TeleFlowApplication).authManager
+        val currentUser = authManager.currentUser.value
         
-        // In a real app, you would get this information from your user data repository
-        // For now, we'll just use hardcoded values as specified in the requirements
-        userNameTextView?.text = "John Anderson"
-        userEmailTextView?.text = "john.anderson@example.com"
-        
-        // Load profile image using ImageUtils
-        if (profileImageView != null) {
-            com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView)
+        if (currentUser != null) {
+            // Display actual user information
+            userNameTextView.text = currentUser.fullName
+            userEmailTextView.text = currentUser.email
+            
+            // Load profile image using ImageUtils
+            com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView, currentUser.profileImagePath)
             // Remove any padding that would be present for the icon
+            profileImageView.setPadding(0, 0, 0, 0)
+        } else {
+            // User not logged in - shouldn't happen but handle gracefully
+            userNameTextView.text = "Guest User"
+            userEmailTextView.text = "Not logged in"
+            
+            com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView)
             profileImageView.setPadding(0, 0, 0, 0)
         }
     }
@@ -194,8 +230,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
-                // Implementation of logout functionality
-                // For example, clear user data and navigate to login screen
+                // Get AuthManager and perform logout
+                val authManager = (application as TeleFlowApplication).authManager
+                authManager.logout()
                 
                 // Navigate to login fragment
                 navController.navigate(R.id.loginFragment)

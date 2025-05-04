@@ -103,6 +103,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         // Set custom title based on the current destination
         when (destination.id) {
+            R.id.loginFragment -> {
+                // Hide action bar and bottom navigation on login screen
+                supportActionBar?.hide()
+                bottomNavigationView.visibility = View.GONE
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
             R.id.homeFragment -> {
                 // Restore original theme if needed
                 setTheme(R.style.Theme_TeleFlow)

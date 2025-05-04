@@ -6,4 +6,20 @@
     <string name="view_all">View All</string>
     <string name="recent_scripts">Recent Scripts</string>
     <string name="record_new_video">Record New Video</string>
+    
+    <!-- Login Screen -->
+    <string name="sign_in_to_account">Sign in to your Account</string>
+    <string name="login_subtitle">Enter your email and password to log in</string>
+    <string name="email_label">Email</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_label">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_button">Login</string>
+    <string name="dont_have_account">Don\'t have an account? </string>
+    <string name="sign_up_here">Sign up here</string>
+    <string name="email_required">Email is required</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="password_required">Password is required</string>
+    <string name="password_too_short">Password must be at least 6 characters</string>
 </resources>

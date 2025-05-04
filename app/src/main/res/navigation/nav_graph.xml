@@ -21,7 +21,9 @@
             app:destination="@id/scriptEditorFragment" />
         <action
             android:id="@+id/action_homeFragment_to_recordFragment"
-            app:destination="@id/recordFragment" />
+            app:destination="@id/recordFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_homeFragment_to_recordingsFragment"
             app:destination="@id/recordingsFragment" />
@@ -34,7 +36,9 @@
         tools:layout="@layout/fragment_scripts">
         <action
             android:id="@+id/action_scriptsFragment_to_recordFragment"
-            app:destination="@id/recordFragment" />
+            app:destination="@id/recordFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_scriptsFragment_to_scriptEditorFragment"
             app:destination="@id/scriptEditorFragment" />
@@ -47,10 +51,14 @@
         tools:layout="@layout/fragment_record">
         <action
             android:id="@+id/action_recordFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_recordFragment_to_recordingsFragment"
-            app:destination="@id/recordingsFragment" />
+            app:destination="@id/recordingsFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <argument
             android:name="scriptTitle"
             app:argType="string"
@@ -82,25 +90,13 @@
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
-            app:destination="@id/editProfileFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:destination="@id/editProfileFragment" />
         <action
             android:id="@+id/action_profileFragment_to_changePasswordFragment"
-            app:destination="@id/changePasswordFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:destination="@id/changePasswordFragment" />
         <action
             android:id="@+id/action_profileFragment_to_aboutDevelopersFragment"
-            app:destination="@id/aboutDevelopersFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:destination="@id/aboutDevelopersFragment" />
     </fragment>
 
     <fragment
@@ -119,7 +115,20 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.teleflow.fragments.SettingsFragment"
         android:label="Settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutDevelopersFragment"
+            app:destination="@id/aboutDevelopersFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/videoPlayerFragment"

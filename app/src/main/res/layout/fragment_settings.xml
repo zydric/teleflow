@@ -7,257 +7,363 @@
     android:background="@color/background_color"
     tools:context=".fragments.SettingsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- General Settings Section -->
         <TextView
-            android:id="@+id/settings_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/general_section_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Settings"
-            android:textColor="@color/heading_color"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- App Settings Section -->
-        <TextView
-            android:id="@+id/app_settings_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="App Settings"
-            android:textColor="@color/heading_color"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settings_title" />
-
-        <View
-            android:id="@+id/app_settings_divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/nav_bar_border_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_settings_title" />
-
-        <!-- Dark Mode Setting -->
-        <TextView
-            android:id="@+id/dark_mode_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="Dark Mode"
+            android:text="GENERAL"
             android:textColor="@color/text_color"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/dark_mode_switch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_settings_divider" />
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/dark_mode_switch"
-            android:layout_width="wrap_content"
+        <!-- Account Settings Item -->
+        <LinearLayout
+            android:id="@+id/account_settings_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:thumbTint="@color/active_color"
-            android:trackTint="@color/nav_bar_border_color"
-            app:layout_constraintBottom_toBottomOf="@+id/dark_mode_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/dark_mode_label" />
-
-        <!-- Font Size Setting -->
-        <TextView
-            android:id="@+id/font_size_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Font Size"
-            android:textColor="@color/text_color"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dark_mode_label" />
-
-        <RadioGroup
-            android:id="@+id/font_size_radio_group"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/font_size_label">
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp">
 
-            <RadioButton
-                android:id="@+id/font_size_small"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_account"
+                android:contentDescription="Account icon" />
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Small"
-                android:textColor="@color/text_color"
-                android:buttonTint="@color/active_color" />
+                android:text="Account Settings"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp" />
 
-            <RadioButton
-                android:id="@+id/font_size_medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Medium"
-                android:textColor="@color/text_color"
-                android:buttonTint="@color/active_color" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_right_settings"
+                android:contentDescription="Chevron right" />
+        </LinearLayout>
 
-            <RadioButton
-                android:id="@+id/font_size_large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Large"
-                android:textColor="@color/text_color"
-                android:buttonTint="@color/active_color" />
-        </RadioGroup>
-
-        <!-- Recording Settings Section -->
-        <TextView
-            android:id="@+id/recording_settings_title"
-            android:layout_width="wrap_content"
+        <!-- Change Password Item -->
+        <LinearLayout
+            android:id="@+id/change_password_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Recording Settings"
-            android:textColor="@color/heading_color"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/font_size_radio_group" />
+            android:orientation="horizontal"
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp">
 
-        <View
-            android:id="@+id/recording_settings_divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/nav_bar_border_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recording_settings_title" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_lock"
+                android:contentDescription="Lock icon" />
 
-        <!-- Video Quality Setting -->
-        <TextView
-            android:id="@+id/video_quality_label"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Change Password"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_right_settings"
+                android:contentDescription="Chevron right" />
+        </LinearLayout>
+
+        <!-- About TeleFlow Item -->
+        <LinearLayout
+            android:id="@+id/about_teleflow_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Video Quality"
+            android:orientation="horizontal"
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_info"
+                android:contentDescription="Info icon" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="About TeleFlow"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_right_settings"
+                android:contentDescription="Chevron right" />
+        </LinearLayout>
+
+        <!-- Script Overlay Settings Section -->
+        <TextView
+            android:id="@+id/overlay_section_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SCRIPT OVERLAY SETTINGS"
             android:textColor="@color/text_color"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recording_settings_divider" />
-
-        <Spinner
-            android:id="@+id/video_quality_spinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/text_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/video_quality_label" />
-
-        <!-- Auto-Save Setting -->
-        <TextView
-            android:id="@+id/auto_save_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            android:text="Auto-Save Recordings"
-            android:textColor="@color/text_color"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/auto_save_switch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/video_quality_spinner" />
+            android:layout_marginBottom="8dp" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/auto_save_switch"
-            android:layout_width="wrap_content"
+        <!-- Font Size Control -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:thumbTint="@color/active_color"
-            android:trackTint="@color/nav_bar_border_color"
-            app:layout_constraintBottom_toBottomOf="@+id/auto_save_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/auto_save_label" />
+            android:orientation="vertical"
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp">
 
-        <!-- About Section -->
-        <TextView
-            android:id="@+id/about_title"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Font Size"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/font_size_button_group_background"
+                android:padding="4dp">
+
+                <Button
+                    android:id="@+id/btn_decrease_font"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="-"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+
+                <TextView
+                    android:id="@+id/tv_font_size"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="18"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:gravity="center" />
+
+                <Button
+                    android:id="@+id/btn_increase_font"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="+"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Font Color Selection -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="About"
-            android:textColor="@color/heading_color"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/auto_save_label" />
+            android:orientation="vertical"
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp">
 
-        <View
-            android:id="@+id/about_divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/nav_bar_border_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/about_title" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Font Color"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp" />
 
-        <TextView
-            android:id="@+id/version_label"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/color_white"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/white_circle"
+                    android:background="@drawable/font_color_circle_selector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="White color" />
+
+                <ImageView
+                    android:id="@+id/color_orange"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/orange_circle"
+                    android:background="@drawable/font_color_circle_selector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Orange color" />
+
+                <ImageView
+                    android:id="@+id/color_blue"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/blue_circle"
+                    android:background="@drawable/font_color_circle_selector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Blue color" />
+
+                <ImageView
+                    android:id="@+id/color_green"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/green_circle"
+                    android:background="@drawable/font_color_circle_selector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Green color" />
+
+                <ImageView
+                    android:id="@+id/color_red"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/red_circle"
+                    android:background="@drawable/font_color_circle_selector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Red color" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Overlay Opacity Slider -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Version"
-            android:textColor="@color/text_color"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/about_divider" />
+            android:orientation="vertical"
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp">
 
-        <TextView
-            android:id="@+id/version_value"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Overlay Opacity"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_opacity_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="75%"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/opacity_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="75"
+                android:progressTint="#FFCC00"
+                android:thumbTint="#FFCC00"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp" />
+        </LinearLayout>
+
+        <!-- Scroll Speed Slider -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1.0.0"
-            android:textColor="@color/text_color"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/version_label" />
+            android:orientation="vertical"
+            android:background="@drawable/settings_item_background"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp">
 
-        <Button
-            android:id="@+id/privacy_policy_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Privacy Policy"
-            android:textAllCaps="false"
-            android:textColor="@color/active_color"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/version_label" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
 
-        <Button
-            android:id="@+id/terms_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Terms of Service"
-            android:textAllCaps="false"
-            android:textColor="@color/active_color"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/privacy_policy_button" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Scroll Speed"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_scroll_speed_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Normal"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/scroll_speed_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="50"
+                android:progressTint="#FFCC00"
+                android:thumbTint="#FFCC00"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp" />
+        </LinearLayout>
+        
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView> 

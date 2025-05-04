@@ -1,32 +1,56 @@
 package com.example.teleflow.fragments
 
-import android.content.Intent
-import android.net.Uri
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Spinner
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var darkModeSwitch: SwitchCompat
-    private lateinit var fontSizeRadioGroup: RadioGroup
-    private lateinit var videoQualitySpinner: Spinner
-    private lateinit var autoSaveSwitch: SwitchCompat
-    private lateinit var versionValue: TextView
-    private lateinit var privacyPolicyButton: Button
-    private lateinit var termsButton: Button
+    // UI elements
+    private lateinit var accountSettingsItem: LinearLayout
+    private lateinit var changePasswordItem: LinearLayout
+    private lateinit var aboutTeleflowItem: LinearLayout
+    
+    private lateinit var decreaseFontButton: Button
+    private lateinit var increaseFontButton: Button
+    private lateinit var fontSizeText: TextView
+    
+    private lateinit var colorWhite: ImageView
+    private lateinit var colorOrange: ImageView
+    private lateinit var colorBlue: ImageView
+    private lateinit var colorGreen: ImageView
+    private lateinit var colorRed: ImageView
+    private val colorViews = mutableListOf<ImageView>()
+    
+    private lateinit var opacitySlider: SeekBar
+    private lateinit var opacityValue: TextView
+    
+    private lateinit var scrollSpeedSlider: SeekBar
+    private lateinit var scrollSpeedValue: TextView
+    
+    // Settings values
+    private var fontSize = 18
+    private var selectedColorIndex = 0 // 0=white, 1=orange, 2=blue, 3=green, 4=red
+    private var opacity = 75
+    private var scrollSpeed = 50
+    
+    // Constants
+    private val MIN_FONT_SIZE = 12
+    private val MAX_FONT_SIZE = 28
+    
+    // Shared preferences
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,83 +62,175 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
+        // Initialize shared preferences
+        prefs = requireActivity().getSharedPreferences("teleflow_settings", Context.MODE_PRIVATE)
+        
         // Initialize UI components
-        darkModeSwitch = view.findViewById(R.id.dark_mode_switch)
-        fontSizeRadioGroup = view.findViewById(R.id.font_size_radio_group)
-        videoQualitySpinner = view.findViewById(R.id.video_quality_spinner)
-        autoSaveSwitch = view.findViewById(R.id.auto_save_switch)
-        versionValue = view.findViewById(R.id.version_value)
-        privacyPolicyButton = view.findViewById(R.id.privacy_policy_button)
-        termsButton = view.findViewById(R.id.terms_button)
-
-        // Set up video quality spinner
-        val videoQualities = arrayOf("Low (480p)", "Medium (720p)", "High (1080p)", "Ultra High (4K)")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, videoQualities)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        videoQualitySpinner.adapter = adapter
-        videoQualitySpinner.setSelection(1) // Default to Medium
-
-        // Set version number
-        versionValue.text = "1.0.0" // Hardcoded version instead of BuildConfig.VERSION_NAME
-
-        // Set up dark mode switch listener
-        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            // Toggle dark mode
-            val mode = if (isChecked) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
+        initializeViews(view)
+        
+        // Load saved settings
+        loadSettings()
+        
+        // Set up event listeners
+        setupEventListeners()
+    }
+    
+    private fun initializeViews(view: View) {
+        // General section
+        accountSettingsItem = view.findViewById(R.id.account_settings_item)
+        changePasswordItem = view.findViewById(R.id.change_password_item)
+        aboutTeleflowItem = view.findViewById(R.id.about_teleflow_item)
+        
+        // Font size controls
+        decreaseFontButton = view.findViewById(R.id.btn_decrease_font)
+        increaseFontButton = view.findViewById(R.id.btn_increase_font)
+        fontSizeText = view.findViewById(R.id.tv_font_size)
+        
+        // Font color controls
+        colorWhite = view.findViewById(R.id.color_white)
+        colorOrange = view.findViewById(R.id.color_orange)
+        colorBlue = view.findViewById(R.id.color_blue)
+        colorGreen = view.findViewById(R.id.color_green)
+        colorRed = view.findViewById(R.id.color_red)
+        colorViews.addAll(listOf(colorWhite, colorOrange, colorBlue, colorGreen, colorRed))
+        
+        // Opacity slider
+        opacitySlider = view.findViewById(R.id.opacity_slider)
+        opacityValue = view.findViewById(R.id.tv_opacity_value)
+        
+        // Scroll speed slider
+        scrollSpeedSlider = view.findViewById(R.id.scroll_speed_slider)
+        scrollSpeedValue = view.findViewById(R.id.tv_scroll_speed_value)
+    }
+    
+    private fun loadSettings() {
+        // Load font size
+        fontSize = prefs.getInt("font_size", 18)
+        fontSizeText.text = fontSize.toString()
+        
+        // Load color selection
+        selectedColorIndex = prefs.getInt("font_color_index", 0)
+        updateColorSelection()
+        
+        // Load opacity
+        opacity = prefs.getInt("opacity", 75)
+        opacitySlider.progress = opacity
+        updateOpacityText()
+        
+        // Load scroll speed
+        scrollSpeed = prefs.getInt("scroll_speed", 50)
+        scrollSpeedSlider.progress = scrollSpeed
+        updateScrollSpeedText()
+    }
+    
+    private fun setupEventListeners() {
+        // Navigation items
+        accountSettingsItem.setOnClickListener {
+            // Navigate to Profile screen instead of Edit Profile
+            findNavController().navigate(R.id.action_settingsFragment_to_profileFragment)
+        }
+        
+        changePasswordItem.setOnClickListener {
+            // Navigate to change password
+            findNavController().navigate(R.id.action_settingsFragment_to_changePasswordFragment)
+        }
+        
+        aboutTeleflowItem.setOnClickListener {
+            // Navigate to about developers
+            findNavController().navigate(R.id.action_settingsFragment_to_aboutDevelopersFragment)
+        }
+        
+        // Font size buttons
+        decreaseFontButton.setOnClickListener {
+            if (fontSize > MIN_FONT_SIZE) {
+                fontSize--
+                fontSizeText.text = fontSize.toString()
+                saveSetting("font_size", fontSize)
             }
-            AppCompatDelegate.setDefaultNightMode(mode)
-            Toast.makeText(
-                requireContext(),
-                "Dark mode ${if (isChecked) "enabled" else "disabled"}",
-                Toast.LENGTH_SHORT
-            ).show()
         }
-
-        // Set up font size radio group listener
-        fontSizeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = view.findViewById<RadioButton>(checkedId)
-            Toast.makeText(
-                requireContext(),
-                "Font size set to ${radioButton.text}",
-                Toast.LENGTH_SHORT
-            ).show()
-            // Here you would actually implement the font size change
+        
+        increaseFontButton.setOnClickListener {
+            if (fontSize < MAX_FONT_SIZE) {
+                fontSize++
+                fontSizeText.text = fontSize.toString()
+                saveSetting("font_size", fontSize)
+            }
         }
-
-        // Set up auto-save switch listener
-        autoSaveSwitch.setOnCheckedChangeListener { _, isChecked ->
-            Toast.makeText(
-                requireContext(),
-                "Auto-save ${if (isChecked) "enabled" else "disabled"}",
-                Toast.LENGTH_SHORT
-            ).show()
+        
+        // Font color selection
+        for (i in colorViews.indices) {
+            val colorView = colorViews[i]
+            colorView.setOnClickListener {
+                selectedColorIndex = i
+                updateColorSelection()
+                saveSetting("font_color_index", selectedColorIndex)
+            }
         }
+        
+        // Opacity slider
+        opacitySlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                opacity = progress
+                updateOpacityText()
+            }
 
-        // Set up privacy policy button
-        privacyPolicyButton.setOnClickListener {
-            openWebPage("https://www.example.com/privacy-policy")
-        }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
-        // Set up terms of service button
-        termsButton.setOnClickListener {
-            openWebPage("https://www.example.com/terms-of-service")
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                saveSetting("opacity", opacity)
+            }
+        })
+        
+        // Scroll speed slider
+        scrollSpeedSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                scrollSpeed = progress
+                updateScrollSpeedText()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                saveSetting("scroll_speed", scrollSpeed)
+            }
+        })
+    }
+    
+    private fun updateColorSelection() {
+        // Update all colors to unselected state
+        for (i in colorViews.indices) {
+            colorViews[i].isSelected = (i == selectedColorIndex)
         }
     }
-
-    private fun openWebPage(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivity(intent)
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "No app found to open the link",
-                Toast.LENGTH_SHORT
-            ).show()
+    
+    private fun updateOpacityText() {
+        opacityValue.text = "$opacity%"
+    }
+    
+    private fun updateScrollSpeedText() {
+        val speedText = when {
+            scrollSpeed < 25 -> "Slow"
+            scrollSpeed < 40 -> "Medium Slow"
+            scrollSpeed in 40..60 -> "Normal"
+            scrollSpeed < 80 -> "Medium Fast"
+            else -> "Fast"
+        }
+        scrollSpeedValue.text = speedText
+    }
+    
+    private fun saveSetting(key: String, value: Int) {
+        prefs.edit().putInt(key, value).apply()
+    }
+    
+    private fun getColorFromIndex(index: Int): String {
+        return when (index) {
+            0 -> "#FFFFFF" // White
+            1 -> "#FFCC00" // Orange/Gold
+            2 -> "#3B82F6" // Blue
+            3 -> "#10B981" // Green
+            4 -> "#EF4444" // Red
+            else -> "#FFFFFF" // Default white
         }
     }
 } 

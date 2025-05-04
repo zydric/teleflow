@@ -26,8 +26,8 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:contentDescription="TeleFlow Logo"
                 android:src="@mipmap/teleflow_ic_launcher" />
 
@@ -46,10 +46,10 @@
             android:id="@+id/tvSignInHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="16dp"
             android:text="@string/sign_in_to_account"
             android:textColor="@color/white"
-            android:textSize="28sp"
+            android:textSize="38sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/logoContainer" />
 

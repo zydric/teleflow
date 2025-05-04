@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -22,8 +23,8 @@ class SettingsFragment : Fragment() {
     private lateinit var changePasswordItem: LinearLayout
     private lateinit var aboutTeleflowItem: LinearLayout
     
-    private lateinit var decreaseFontButton: Button
-    private lateinit var increaseFontButton: Button
+    private lateinit var decreaseFontButton: ImageButton
+    private lateinit var increaseFontButton: ImageButton
     private lateinit var fontSizeText: TextView
     
     private lateinit var colorWhite: ImageView

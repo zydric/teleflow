@@ -21,6 +21,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.example.teleflow.fragments.RecordFragment
+import android.widget.TextView
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,6 +30,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
+    
+    // Add these views for the custom drawer
+    private lateinit var recordingsMenuItem: View
+    private lateinit var settingsMenuItem: View
+    private lateinit var aboutMenuItem: View
+    private lateinit var logoutMenuItem: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +44,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         // Set up DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout)
         
-        // Set up NavigationView
-            val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(this)
+        // Set up custom drawer menu item clicks
+        setupCustomDrawer()
         
         // Properly set up NavController using NavHostFragment
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -94,6 +100,60 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 else -> false
             }
         }
+    }
+    
+    // Setup custom drawer navigation
+    private fun setupCustomDrawer() {
+        // Initialize menu items
+        recordingsMenuItem = findViewById(R.id.nav_recordings_item)
+        settingsMenuItem = findViewById(R.id.nav_settings_item)
+        aboutMenuItem = findViewById(R.id.nav_about_item)
+        logoutMenuItem = findViewById(R.id.nav_logout_item)
+        
+        // Set click listeners for menu items
+        recordingsMenuItem.setOnClickListener {
+            navController.navigate(R.id.recordingsFragment)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        
+        settingsMenuItem.setOnClickListener {
+            navController.navigate(R.id.settingsFragment)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        
+        aboutMenuItem.setOnClickListener {
+            navController.navigate(R.id.aboutDevelopersFragment)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        
+        logoutMenuItem.setOnClickListener {
+            // Handle logout functionality
+            handleLogout()
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        
+        // Update user profile in drawer header
+        updateUserProfile()
+    }
+    
+    // Update user profile information in the drawer header
+    private fun updateUserProfile() {
+        val userNameTextView = findViewById<TextView>(R.id.user_name)
+        val userEmailTextView = findViewById<TextView>(R.id.user_email)
+        
+        // In a real app, you would get this information from your user data repository
+        // For now, we'll just use hardcoded values as specified in the requirements
+        userNameTextView.text = "John Anderson"
+        userEmailTextView.text = "john.anderson@example.com"
+    }
+    
+    // Handle logout
+    private fun handleLogout() {
+        // Implementation of logout functionality
+        // For example, clear user data and navigate to login screen
+        
+        // Navigate to login fragment
+        navController.navigate(R.id.loginFragment)
     }
     
     override fun onDestinationChanged(

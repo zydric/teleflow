@@ -20,10 +20,11 @@
     <!-- Script overlay with semi-transparent background -->
     <ScrollView
         android:id="@+id/scrollView_script"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="293dp"
         android:background="#80000000"
-        android:padding="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +34,7 @@
             android:id="@+id/textView_scriptOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit." />
@@ -72,7 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Bottom row with back button, record button, and gallery button -->
+        <!-- Bottom row with back button, record button -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_row"
             android:layout_width="0dp"
@@ -169,24 +171,58 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="Opacity"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center_vertical"
+                        android:text="Opacity"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_opacity_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:gravity="end"
+                        android:text="50%"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <SeekBar
                     android:id="@+id/slider_opacity"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="120dp"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:max="100"
                     android:progress="50"
                     android:progressTint="#FFCC00"
                     android:thumbTint="#FFCC00" />
             </LinearLayout>
+
+            <!-- Vertical Divider 1 -->
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:background="@drawable/vertical_divider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/font_size_control_group"
+                app:layout_constraintStart_toEndOf="@+id/opacity_control_group"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Font Size Control -->
             <LinearLayout
@@ -195,44 +231,62 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Font size"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:gravity="center_vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:text="Font size"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_font_size_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:gravity="end"
+                        android:text="18"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <SeekBar
+                    android:id="@+id/slider_fontSize"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Changed to ImageButton with minus icon -->
-                    <ImageButton
-                        android:id="@+id/button_fontSizeDecrease"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/font_size_button_background"
-                        android:src="@drawable/minus_icon"
-                        android:contentDescription="Decrease font size" />
-
-                    <!-- Changed to ImageButton with plus icon -->
-                    <ImageButton
-                        android:id="@+id/button_fontSizeIncrease"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/font_size_button_background"
-                        android:src="@drawable/plus_icon"
-                        android:contentDescription="Increase font size" />
-                </LinearLayout>
+                    android:max="100"
+                    android:progress="50"
+                    android:progressTint="#FFCC00"
+                    android:thumbTint="#FFCC00" />
             </LinearLayout>
+
+            <!-- Vertical Divider 2 -->
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:background="@drawable/vertical_divider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/speed_control_group"
+                app:layout_constraintStart_toEndOf="@+id/font_size_control_group"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Speed Control -->
             <LinearLayout
@@ -245,16 +299,39 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Speed"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:text="Speed"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_speed_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:gravity="end"
+                        android:text="1x"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/text_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <SeekBar
                     android:id="@+id/slider_scrollSpeed"
-                    android:layout_width="120dp"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="100"
                     android:progress="50"

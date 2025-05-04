@@ -23,6 +23,7 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -82,10 +83,11 @@ class RecordFragment : Fragment() {
     
     // Control components
     private lateinit var opacitySlider: SeekBar
-    private lateinit var fontSizeIncreaseButton: ImageButton
-    private lateinit var fontSizeDecreaseButton: ImageButton
+    private lateinit var opacityValueTextView: TextView
+    private lateinit var fontSizeSlider: SeekBar
+    private lateinit var fontSizeValueTextView: TextView
     private lateinit var scrollSpeedSlider: SeekBar
-    private lateinit var fontSizeTextView: TextView
+    private lateinit var speedValueTextView: TextView
     
     // Camera components
     private lateinit var cameraExecutor: ExecutorService
@@ -114,9 +116,6 @@ class RecordFragment : Fragment() {
     // ViewModels
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val recordingViewModel: RecordingViewModel by viewModels()
-    
-    // Animation
-    private lateinit var pulseAnimator: AnimatorSet
     
     // Permission handler
     private val requestPermissions = registerForActivityResult(
@@ -200,19 +199,37 @@ class RecordFragment : Fragment() {
         
         // Control components
         opacitySlider = view.findViewById(R.id.slider_opacity)
-        fontSizeIncreaseButton = view.findViewById(R.id.button_fontSizeIncrease)
-        fontSizeDecreaseButton = view.findViewById(R.id.button_fontSizeDecrease)
+        opacityValueTextView = view.findViewById(R.id.tv_opacity_value)
+        fontSizeSlider = view.findViewById(R.id.slider_fontSize)
+        fontSizeValueTextView = view.findViewById(R.id.tv_font_size_value)
         scrollSpeedSlider = view.findViewById(R.id.slider_scrollSpeed)
+        speedValueTextView = view.findViewById(R.id.tv_speed_value)
         
-        // Set the font size text view (we'll use the current size)
-        fontSizeTextView = TextView(context)
-        fontSizeTextView.text = currentFontSize.toInt().toString()
+        // Initial slider position and text values
+        fontSizeSlider.progress = ((currentFontSize - minFontSize) / (maxFontSize - minFontSize) * fontSizeSlider.max).toInt()
+        fontSizeValueTextView.text = currentFontSize.toInt().toString()
+        
+        // Set initial opacity value text
+        opacityValueTextView.text = "${opacitySlider.progress}%"
+        
+        // Set initial speed value text with multiplier
+        val initialSpeedMultiplier = when {
+            scrollSpeed < 20 -> "0.25x"
+            scrollSpeed < 40 -> "0.5x"
+            scrollSpeed in 40..60 -> "1x"
+            scrollSpeed < 80 -> "1.5x"
+            else -> "2x"
+        }
+        speedValueTextView.text = initialSpeedMultiplier
         
         // Display the script content in the overlay
         scriptOverlayTextView.text = "$scriptTitle\n\n$scriptContent"
         
         // Set initial font size
         scriptOverlayTextView.textSize = currentFontSize
+        
+        // Hide timer by default
+        timerTextView.visibility = View.GONE
         
         // Set up button click listeners
         setupClickListeners()
@@ -233,17 +250,20 @@ class RecordFragment : Fragment() {
         autoScrollRunnable = object : Runnable {
             override fun run() {
                 if (isAutoScrolling && isRecording) {
-                    // Calculate scroll speed based on slider value
-                    // Higher value = faster scrolling
-                    val scrollAmount = (scrollSpeed / 10) + 1
+                    // Calculate scroll speed based on slider value as a multiplier
+                    // Map 0-100 slider value to appropriate scroll amount
+                    val scrollAmount = when {
+                        scrollSpeed < 20 -> 1  // 0.25x
+                        scrollSpeed < 40 -> 2  // 0.5x
+                        scrollSpeed in 40..60 -> 4  // 1x (base speed)
+                        scrollSpeed < 80 -> 6  // 1.5x
+                        else -> 8  // 2x
+                    }
                     scriptScrollView.smoothScrollBy(0, scrollAmount)
                 }
                 handler.postDelayed(this, 50) // Adjust timing for smoother scrolling
             }
         }
-        
-        // Set up pulse animation
-        setupPulseAnimation()
         
         // Initialize camera executor
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -283,21 +303,17 @@ class RecordFragment : Fragment() {
         }
         
         // Font size adjustment buttons
-        fontSizeIncreaseButton.setOnClickListener {
-            if (currentFontSize < maxFontSize) {
-                currentFontSize += 2f
+        fontSizeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Calculate font size between min and max based on slider progress
+                currentFontSize = minFontSize + (progress.toFloat() / seekBar!!.max) * (maxFontSize - minFontSize)
                 scriptOverlayTextView.textSize = currentFontSize
-                fontSizeTextView.text = currentFontSize.toInt().toString()
+                fontSizeValueTextView.text = currentFontSize.toInt().toString()
             }
-        }
-        
-        fontSizeDecreaseButton.setOnClickListener {
-            if (currentFontSize > minFontSize) {
-                currentFontSize -= 2f
-                scriptOverlayTextView.textSize = currentFontSize
-                fontSizeTextView.text = currentFontSize.toInt().toString()
-            }
-        }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
     
     private fun setupSliderListeners() {
@@ -308,6 +324,8 @@ class RecordFragment : Fragment() {
                 val opacity = 0.1f + (progress / 100f * 0.8f)
                 // Apply opacity to script background
                 scriptScrollView.background.alpha = (opacity * 255).toInt()
+                // Update opacity value text (as percentage)
+                opacityValueTextView.text = "$progress%"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -324,6 +342,16 @@ class RecordFragment : Fragment() {
                     isAutoScrolling = true
                     handler.post(autoScrollRunnable)
                 }
+                
+                // Update speed text with multiplier value
+                val speedMultiplier = when {
+                    progress < 20 -> "0.25x"
+                    progress < 40 -> "0.5x"
+                    progress in 40..60 -> "1x"
+                    progress < 80 -> "1.5x"
+                    else -> "2x"
+                }
+                speedValueTextView.text = speedMultiplier
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -355,25 +383,6 @@ class RecordFragment : Fragment() {
             }
             .setNegativeButton("No", null)
             .show()
-    }
-    
-    private fun setupPulseAnimation() {
-        // Scale X animation
-        val scaleXAnimator = ObjectAnimator.ofFloat(recordButtonImage, "scaleX", 1f, 1.1f)
-        scaleXAnimator.duration = 800
-        scaleXAnimator.repeatCount = ObjectAnimator.INFINITE
-        scaleXAnimator.repeatMode = ObjectAnimator.REVERSE
-        
-        // Scale Y animation
-        val scaleYAnimator = ObjectAnimator.ofFloat(recordButtonImage, "scaleY", 1f, 1.1f)
-        scaleYAnimator.duration = 800
-        scaleYAnimator.repeatCount = ObjectAnimator.INFINITE
-        scaleYAnimator.repeatMode = ObjectAnimator.REVERSE
-        
-        // Combine animations
-        pulseAnimator = AnimatorSet()
-        pulseAnimator.interpolator = AccelerateDecelerateInterpolator()
-        pulseAnimator.playTogether(scaleXAnimator, scaleYAnimator)
     }
     
     private fun updateTimerDisplay() {
@@ -547,38 +556,34 @@ class RecordFragment : Fragment() {
     private fun updateRecordingUI(isRecording: Boolean) {
         this.isRecording = isRecording
         
+        // Load and start transition animation
+        val animation = AnimationUtils.loadAnimation(context, R.anim.record_button_transition)
+        recordButtonImage.startAnimation(animation)
+        
         if (isRecording) {
-            // Update button appearance
+            // Update button appearance to recording state with white square indicator
             recordButtonImage.setBackgroundResource(R.drawable.record_button_recording)
             
-            // Start timer
+            // Show timer and start counting
             recordingDurationSeconds = 0
             timerTextView.visibility = View.VISIBLE
             updateTimerDisplay()
             handler.post(timerRunnable)
             
-            // Start auto-scrolling if enabled
+            // Start auto-scrolling
             isAutoScrolling = true
             handler.post(autoScrollRunnable)
-            
-            // Start pulse animation
-            pulseAnimator.start()
         } else {
-            // Update button appearance
+            // Update button appearance back to solid red circle
             recordButtonImage.setBackgroundResource(R.drawable.record_button_idle)
             
-            // Stop timer
+            // Hide timer and stop counting
             handler.removeCallbacks(timerRunnable)
             timerTextView.visibility = View.GONE
             
             // Stop auto-scrolling
             isAutoScrolling = false
             handler.removeCallbacks(autoScrollRunnable)
-            
-            // Stop pulse animation
-            pulseAnimator.cancel()
-            recordButtonImage.scaleX = 1f
-            recordButtonImage.scaleY = 1f
         }
     }
     

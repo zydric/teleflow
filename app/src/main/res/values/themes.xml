@@ -17,6 +17,9 @@
         <!-- Status bar color -->
         <item name="android:statusBarColor">@color/nav_bar_color</item>
         
+        <!-- Navigation bar color -->
+        <item name="android:navigationBarColor">@color/nav_bar_color</item>
+        
         <!-- Action bar styling -->
         <item name="actionBarStyle">@style/TeleFlow.ActionBar</item>
         
@@ -58,6 +61,10 @@
         <!-- Status bar color -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         
+        <!-- Navigation bar color -->
+        <item name="android:navigationBarColor">@color/nav_bar_color</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        
         <!-- Full screen flags -->
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -67,7 +74,6 @@
         <!-- For Android 5.0+ specific -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         
         <!-- Force disable action bar -->
         <item name="actionBarSize">0dp</item>
@@ -86,7 +92,7 @@
 
         <!-- Status bar and navigation bar colors -->
         <item name="android:statusBarColor">@color/background_color</item>
-        <item name="android:navigationBarColor">@color/background_color</item>
+        <item name="android:navigationBarColor">@color/nav_bar_color</item>
         <item name="android:windowBackground">@color/background_color</item>
         
         <!-- Disable only action bar, not status bar -->

@@ -88,7 +88,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp">
+                android:paddingVertical="20dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -112,6 +112,12 @@
                     android:contentDescription="Chevron right" />
             </LinearLayout>
 
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/section_divider" />
+
             <!-- Change Password Menu Item -->
             <LinearLayout
                 android:id="@+id/change_password_item"
@@ -123,7 +129,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp">
+                android:paddingVertical="20dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -147,6 +153,12 @@
                     android:contentDescription="Chevron right" />
             </LinearLayout>
 
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/section_divider" />
+
             <!-- Logout Menu Item -->
             <LinearLayout
                 android:id="@+id/logout_item"
@@ -158,7 +170,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp">
+                android:paddingVertical="20dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -179,17 +191,9 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_chevron_right"
-                    android:tint="@color/logout_color"
-                    android:contentDescription="Chevron right" />
+                    android:contentDescription="Chevron right"
+                    app:tint="@color/logout_color" />
             </LinearLayout>
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/section_divider" />
 
             <!-- App Section -->
             <TextView
@@ -198,6 +202,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
                 android:text="APP"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -213,7 +218,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp">
+                android:paddingVertical="20dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -237,6 +242,12 @@
                     android:contentDescription="Chevron right" />
             </LinearLayout>
 
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/section_divider" />
+
             <!-- App Version Menu Item -->
             <LinearLayout
                 android:id="@+id/version_item"
@@ -248,7 +259,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp">
+                android:paddingVertical="20dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -269,10 +280,10 @@
                     android:id="@+id/app_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2.1.0"
+                    android:text="1.0.0"
                     android:textColor="@color/active_color"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="normal" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

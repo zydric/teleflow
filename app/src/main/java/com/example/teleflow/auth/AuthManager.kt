@@ -100,8 +100,8 @@ class AuthManager(private val context: Context) {
                 // Create a welcome script for the new user
                 createWelcomeScript(userId)
                 
-                // Set as current user
-                setCurrentUser(userId)
+                // Remove automatic login after registration
+                // setCurrentUser(userId)
                 
                 return@withContext AuthResult(true, "Registration successful")
             } catch (e: Exception) {
@@ -310,6 +310,26 @@ class AuthManager(private val context: Context) {
         } catch (e: Exception) {
             // Log error but don't fail registration if script creation fails
             e.printStackTrace()
+        }
+    }
+    
+    /**
+     * Explicitly refresh the current user data from the database
+     * Updates the LiveData with the latest data
+     * 
+     * @param userId The user ID to refresh
+     * @return The updated User object or null if not found
+     */
+    suspend fun refreshUserData(userId: Int): User? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user = userDao.getUserByIdSync(userId)
+                _currentUser.postValue(user)
+                return@withContext user
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@withContext null
+            }
         }
     }
 }

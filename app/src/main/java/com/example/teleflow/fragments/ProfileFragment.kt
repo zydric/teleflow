@@ -95,6 +95,9 @@ class ProfileFragment : Fragment() {
         super.onResume()
         // Refresh profile image when returning to this fragment
         loadProfileImage()
+        
+        // Refresh user data when returning to the fragment
+        refreshUserData()
     }
     
     private fun loadProfileImage() {
@@ -102,6 +105,19 @@ class ProfileFragment : Fragment() {
         ImageUtils.loadProfileImage(requireContext(), profileImage)
         // Remove any padding that would be present for the icon
         profileImage.setPadding(0, 0, 0, 0)
+    }
+    
+    private fun refreshUserData() {
+        // Refresh user data from the database
+        authViewModel.refreshUserData()
+        
+        // Also update UI with current value if available
+        val currentUser = authViewModel.currentUser.value
+        if (currentUser != null) {
+            // Update UI with fresh user data
+            usernameLabel.text = currentUser.fullName
+            emailLabel.text = currentUser.email
+        }
     }
     
     private fun setupClickListeners() {

@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.teleflow.MainActivity
 import com.example.teleflow.R
 import com.example.teleflow.viewmodels.AuthViewModel
 import com.google.android.material.textfield.TextInputEditText
@@ -195,37 +196,40 @@ class ChangePasswordFragment : Fragment() {
         val isValid = isPasswordValid(password)
         val missingRequirements = getMissingRequirements(password)
         
-        // Show requirements in only one place to avoid duplication
+        // Show requirements using helperText for consistency
         if (isValid) {
             // Set green border by applying a drawable with green stroke
             newPasswordInput.setBackgroundResource(R.drawable.input_valid_background)
             
-            // Show the success message only in the passwordStrengthText
-            passwordStrengthText.text = "Password meets requirements ✓"
-            passwordStrengthText.setTextColor(ContextCompat.getColor(requireContext(), COLOR_SUCCESS))
+            // Show the success message in the helperText
+            newPasswordLayout.helperText = "Password meets requirements ✓"
+            newPasswordLayout.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), COLOR_SUCCESS))
             
-            // Clear any error in the TextInputLayout
-            newPasswordLayout.error = null
-            newPasswordLayout.helperText = null
+            // Hide the separate strength text
+            passwordStrengthText.visibility = View.GONE
         } else {
             // Set red border by applying a drawable with red stroke
             newPasswordInput.setBackgroundResource(R.drawable.input_error_background)
             
-            // Only show the requirements in the passwordStrengthText
-            passwordStrengthText.text = missingRequirements.joinToString("\n")
-            passwordStrengthText.setTextColor(ContextCompat.getColor(requireContext(), COLOR_ERROR))
+            // Show requirements in the helperText
+            newPasswordLayout.helperText = missingRequirements.joinToString("\n")
+            newPasswordLayout.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), COLOR_ERROR))
             
-            // Don't set error text in the TextInputLayout to avoid duplication
-            newPasswordLayout.error = null
-            newPasswordLayout.helperText = null
+            // Hide the separate strength text
+            passwordStrengthText.visibility = View.GONE
         }
     }
     
     private fun resetPasswordValidation() {
         // Reset to default background
         newPasswordInput.setBackgroundResource(R.drawable.edit_profile_input_background)
-        passwordStrengthText.text = "Password must be at least $MIN_PASSWORD_LENGTH characters, include a special character and a number"
-        passwordStrengthText.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color))
+        
+        // Reset helper text
+        newPasswordLayout.helperText = "Password must be at least $MIN_PASSWORD_LENGTH characters, include a special character and a number"
+        newPasswordLayout.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.text_color))
+        
+        // Hide the separate strength text
+        passwordStrengthText.visibility = View.GONE
     }
     
     private fun getMissingRequirements(password: String): List<String> {
@@ -321,11 +325,12 @@ class ChangePasswordFragment : Fragment() {
             newPasswordInput.setBackgroundResource(R.drawable.input_error_background)
             isValid = false
         } else if (!isPasswordValid(newPassword)) {
-            // Show the requirements only in the passwordStrengthText
-            passwordStrengthText.text = getMissingRequirements(newPassword).joinToString("\n")
-            passwordStrengthText.setTextColor(ContextCompat.getColor(requireContext(), COLOR_ERROR))
-            passwordStrengthText.visibility = View.VISIBLE
+            // Show the requirements in helperText instead of passwordStrengthText
+            newPasswordLayout.helperText = getMissingRequirements(newPassword).joinToString("\n")
+            newPasswordLayout.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), COLOR_ERROR))
             newPasswordInput.setBackgroundResource(R.drawable.input_error_background)
+            // Hide the separate strength text since we're using helperText
+            passwordStrengthText.visibility = View.GONE
             isValid = false
         }
 
@@ -375,6 +380,10 @@ class ChangePasswordFragment : Fragment() {
             if (result.success) {
                 // If successful, reset form and navigate back
                 resetForm()
+                
+                // Refresh the navigation drawer's user data
+                (requireActivity() as MainActivity).refreshNavigationDrawerUserData()
+                
                 findNavController().popBackStack()
             } else {
                 // If failed, show the error on the current password field

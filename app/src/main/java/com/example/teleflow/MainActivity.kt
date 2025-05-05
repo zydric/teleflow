@@ -25,6 +25,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import android.widget.ImageView
 import com.example.teleflow.TeleFlowApplication
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,7 +61,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             }
 
             override fun onDrawerOpened(drawerView: View) {
-                // Refresh profile image when drawer is opened
+                // Refresh user data and update profile when drawer is opened
+                refreshUserData()
                 updateUserProfile()
             }
 
@@ -202,6 +205,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun updateUserProfile() {
         // Get user information from AuthManager
         val authManager = (application as TeleFlowApplication).authManager
+        
+        // Force refresh user data from database first
+        refreshUserData()
+        
         val currentUser = authManager.currentUser.value
         
         if (currentUser != null) {
@@ -220,6 +227,18 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             
             com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView)
             profileImageView.setPadding(0, 0, 0, 0)
+        }
+    }
+    
+    // Refresh user data from the database
+    private fun refreshUserData() {
+        val authManager = (application as TeleFlowApplication).authManager
+        val userId = authManager.getCurrentUserId()
+        if (userId != null) {
+            // Launch coroutine to refresh user data
+            lifecycleScope.launch {
+                authManager.refreshUserData(userId)
+            }
         }
     }
     
@@ -454,5 +473,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         super.onDestroy()
         // Remove the destination changed listener
         navController.removeOnDestinationChangedListener(this)
+    }
+    
+    // Public method that can be called from fragments to refresh the user data in drawer
+    fun refreshNavigationDrawerUserData() {
+        refreshUserData()
+        updateUserProfile()
     }
 }

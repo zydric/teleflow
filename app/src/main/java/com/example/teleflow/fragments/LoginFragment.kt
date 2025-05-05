@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
 class LoginFragment : Fragment() {
     
@@ -26,7 +27,6 @@ class LoginFragment : Fragment() {
     private lateinit var tilPassword: TextInputLayout
     private lateinit var etPassword: TextInputEditText
     private lateinit var btnLogin: MaterialButton
-    private lateinit var tvForgotPassword: TextView
     private lateinit var tvSignUp: TextView
     
     // ViewModel for authentication
@@ -57,6 +57,19 @@ class LoginFragment : Fragment() {
             return
         }
         
+        // Check if credentials were passed (from registration)
+        val email = arguments?.getString("email")
+        val password = arguments?.getString("password")
+        
+        if (!email.isNullOrEmpty() && !password.isNullOrEmpty()) {
+            // Pre-fill the fields
+            etEmail.setText(email)
+            etPassword.setText(password)
+            
+            // Instead of auto-login, let the user click the login button
+            // performLogin()
+        }
+        
         setupClickListeners()
         setupInputValidation()
     }
@@ -67,7 +80,6 @@ class LoginFragment : Fragment() {
         tilPassword = view.findViewById(R.id.tilPassword)
         etPassword = view.findViewById(R.id.etPassword)
         btnLogin = view.findViewById(R.id.btnLogin)
-        tvForgotPassword = view.findViewById(R.id.tvForgotPassword)
         tvSignUp = view.findViewById(R.id.tvSignUp)
     }
     
@@ -77,12 +89,6 @@ class LoginFragment : Fragment() {
             if (validateInputs()) {
                 performLogin()
             }
-        }
-        
-        // Forgot password click
-        tvForgotPassword.setOnClickListener {
-            // TODO: Navigate to forgot password screen
-            Toast.makeText(context, "Forgot password functionality coming soon", Toast.LENGTH_SHORT).show()
         }
         
         // Sign up click
@@ -115,7 +121,7 @@ class LoginFragment : Fragment() {
             
             override fun afterTextChanged(s: Editable?) {
                 // Only clear any errors
-                tilPassword.setError(null)
+                tilPassword.helperText = null
             }
         })
     }
@@ -142,10 +148,13 @@ class LoginFragment : Fragment() {
         // Only check if password is empty
         val password = etPassword.text.toString()
         if (password.isEmpty()) {
-            tilPassword.setError(getString(R.string.password_required))
+            // Use helperText instead of error to keep the password toggle visible
+            tilPassword.helperText = getString(R.string.password_required)
+            // Use helper text color that matches error color
+            tilPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
             isValid = false
         } else {
-            tilPassword.setError(null)
+            tilPassword.helperText = null
         }
         
         return isValid

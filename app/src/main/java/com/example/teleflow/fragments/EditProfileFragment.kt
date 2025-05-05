@@ -23,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.teleflow.R
 import com.example.teleflow.utils.ImageUtils
 import com.example.teleflow.viewmodels.AuthViewModel
+import com.example.teleflow.MainActivity
 
 class EditProfileFragment : Fragment() {
 
@@ -202,6 +203,12 @@ class EditProfileFragment : Fragment() {
             Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
             
             if (result.success) {
+                // Make sure user data is refreshed immediately
+                authViewModel.refreshUserData()
+                
+                // Also refresh the navigation drawer's user data
+                (requireActivity() as MainActivity).refreshNavigationDrawerUserData()
+                
                 // Navigate back to the profile page
                 findNavController().popBackStack()
             }

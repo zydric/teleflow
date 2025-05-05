@@ -27,7 +27,6 @@ class VideoPlayerFragment : Fragment() {
     private lateinit var videoView: VideoView
     private lateinit var progressBar: ProgressBar
     private lateinit var scriptInfoText: TextView
-    private lateinit var backButton: ImageButton
     private lateinit var deleteButton: ImageButton
     
     private val scriptViewModel: ScriptViewModel by viewModels()
@@ -62,17 +61,20 @@ class VideoPlayerFragment : Fragment() {
         videoView = view.findViewById(R.id.videoView)
         progressBar = view.findViewById(R.id.progressBar)
         scriptInfoText = view.findViewById(R.id.textView_scriptInfo)
-        backButton = view.findViewById(R.id.button_back)
         deleteButton = view.findViewById(R.id.button_delete)
-        
-        // Set up back button
-        backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
         
         // Set up delete button
         deleteButton.setOnClickListener {
             showDeleteConfirmationDialog()
+        }
+        
+        // Make the video view clickable to toggle playback
+        videoView.setOnClickListener {
+            if (videoView.isPlaying) {
+                videoView.pause()
+            } else {
+                videoView.start()
+            }
         }
         
         // Display script info using ViewModel
@@ -158,8 +160,7 @@ class VideoPlayerFragment : Fragment() {
             }
             
             videoView.setOnCompletionListener {
-                // Return to previous screen when video completes
-                // findNavController().popBackStack()
+                // Optional actions when video completes
             }
             
         } catch (e: Exception) {

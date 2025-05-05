@@ -187,9 +187,12 @@ class RecordFragment : Fragment() {
         setImmersiveMode()
 
         // Get script data from arguments
-        scriptTitle = arguments?.getString("title") ?: "Untitled Script"
-        scriptContent = arguments?.getString("content") ?: "No content"
+        scriptTitle = arguments?.getString("scriptTitle") ?: "Untitled Script"
+        scriptContent = arguments?.getString("scriptContent") ?: "No content"
         scriptId = arguments?.getInt("scriptId", -1) ?: -1
+        
+        // Log script data for debugging
+        Log.d(TAG, "Script data loaded - ID: $scriptId, Title: $scriptTitle, Content length: ${scriptContent.length}")
         
         // Load script overlay settings from shared preferences
         loadScriptOverlaySettings()

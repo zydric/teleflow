@@ -11,6 +11,7 @@ import android.widget.Toast
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -134,17 +135,28 @@ class RegisterFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 val password = s.toString()
                 if (password.isNotEmpty() && !isValidPassword(password)) {
-                    tilPassword.setError(getString(R.string.password_criteria))
+                    // Use helperText instead of error to keep the password toggle visible
+                    tilPassword.helperText = getString(R.string.password_criteria)
+                    tilPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+                    // Add error stroke
+                    etPassword.setBackgroundResource(R.drawable.input_error_background)
                 } else {
-                    tilPassword.setError(null)
+                    tilPassword.helperText = null
+                    // Reset to default background
+                    etPassword.setBackgroundResource(R.drawable.edit_profile_input_background)
                 }
                 
                 // Also check confirm password if it's not empty
                 val confirmPassword = etConfirmPassword.text.toString()
                 if (confirmPassword.isNotEmpty() && password != confirmPassword) {
-                    tilConfirmPassword.setError(getString(R.string.passwords_dont_match))
+                    tilConfirmPassword.helperText = getString(R.string.passwords_dont_match)
+                    tilConfirmPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+                    // Add error stroke
+                    etConfirmPassword.setBackgroundResource(R.drawable.input_error_background)
                 } else if (confirmPassword.isNotEmpty()) {
-                    tilConfirmPassword.setError(null)
+                    tilConfirmPassword.helperText = null
+                    // Reset to default background
+                    etConfirmPassword.setBackgroundResource(R.drawable.edit_profile_input_background)
                 }
             }
         })
@@ -160,9 +172,14 @@ class RegisterFragment : Fragment() {
                 val password = etPassword.text.toString()
                 
                 if (confirmPassword.isNotEmpty() && password != confirmPassword) {
-                    tilConfirmPassword.setError(getString(R.string.passwords_dont_match))
+                    tilConfirmPassword.helperText = getString(R.string.passwords_dont_match)
+                    tilConfirmPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+                    // Add error stroke
+                    etConfirmPassword.setBackgroundResource(R.drawable.input_error_background)
                 } else {
-                    tilConfirmPassword.setError(null)
+                    tilConfirmPassword.helperText = null
+                    // Reset to default background
+                    etConfirmPassword.setBackgroundResource(R.drawable.edit_profile_input_background)
                 }
             }
         })
@@ -206,25 +223,35 @@ class RegisterFragment : Fragment() {
         // Validate password
         val password = etPassword.text.toString()
         if (password.isEmpty()) {
-            tilPassword.setError(getString(R.string.password_required))
+            tilPassword.helperText = getString(R.string.password_required)
+            tilPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+            etPassword.setBackgroundResource(R.drawable.input_error_background)
             isValid = false
         } else if (!isValidPassword(password)) {
-            tilPassword.setError(getString(R.string.password_criteria))
+            tilPassword.helperText = getString(R.string.password_criteria)
+            tilPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+            etPassword.setBackgroundResource(R.drawable.input_error_background)
             isValid = false
         } else {
-            tilPassword.setError(null)
+            tilPassword.helperText = null
+            etPassword.setBackgroundResource(R.drawable.edit_profile_input_background)
         }
         
         // Validate confirm password
         val confirmPassword = etConfirmPassword.text.toString()
         if (confirmPassword.isEmpty()) {
-            tilConfirmPassword.setError(getString(R.string.password_required))
+            tilConfirmPassword.helperText = getString(R.string.password_required)
+            tilConfirmPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+            etConfirmPassword.setBackgroundResource(R.drawable.input_error_background)
             isValid = false
         } else if (password != confirmPassword) {
-            tilConfirmPassword.setError(getString(R.string.passwords_dont_match))
+            tilConfirmPassword.helperText = getString(R.string.passwords_dont_match)
+            tilConfirmPassword.setHelperTextColor(ContextCompat.getColorStateList(requireContext(), R.color.logout_color))
+            etConfirmPassword.setBackgroundResource(R.drawable.input_error_background)
             isValid = false
         } else {
-            tilConfirmPassword.setError(null)
+            tilConfirmPassword.helperText = null
+            etConfirmPassword.setBackgroundResource(R.drawable.edit_profile_input_background)
         }
         
         return isValid
@@ -248,8 +275,12 @@ class RegisterFragment : Fragment() {
             Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
             
             if (result.success) {
-                // Registration successful, navigate to home screen
-                findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
+                // Registration successful, navigate to login screen with credentials
+                val bundle = Bundle().apply {
+                    putString("email", email)
+                    putString("password", password)
+                }
+                findNavController().navigate(R.id.action_registerFragment_to_loginFragment, bundle)
             }
         }
     }

@@ -106,4 +106,16 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             callback(result)
         }
     }
+    
+    /**
+     * Refresh current user data from the database
+     * Use this when you need to ensure the latest user data is loaded
+     */
+    fun refreshUserData() {
+        viewModelScope.launch {
+            val userId = getCurrentUserId() ?: return@launch
+            val user = authManager.refreshUserData(userId)
+            // The AuthManager will update the LiveData automatically
+        }
+    }
 } 

@@ -161,8 +161,8 @@ class ProfileFragment : Fragment() {
                 
                 Toast.makeText(requireContext(), "Logout successful", Toast.LENGTH_SHORT).show()
                 
-                // Clear profile image on logout
-                ImageUtils.clearProfileImage(requireContext())
+                // Do NOT clear profile image on logout anymore
+                // ImageUtils.clearProfileImage(requireContext())
                 
                 // Navigate to login fragment
                 findNavController().navigate(R.id.loginFragment)

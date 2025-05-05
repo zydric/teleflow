@@ -29,7 +29,7 @@ object ImageUtils {
     
     // Constants
     private const val PREFS_NAME = "TeleFlowPrefs"
-    private const val PROFILE_IMAGE_KEY = "profile_image_file"
+    private const val PROFILE_IMAGE_KEY_PREFIX = "profile_image_file_user_"
     private const val IMAGES_DIR = "profile_images"
     private const val IMAGE_QUALITY = 90
     private const val MAX_IMAGE_DIMENSION = 1000
@@ -52,14 +52,18 @@ object ImageUtils {
         if (imageUri == null) return false
         
         try {
+            // Get current user ID
+            val authManager = com.example.teleflow.auth.AuthManager(context)
+            val userId = authManager.getCurrentUserId() ?: return false
+            
             // Create image directory if it doesn't exist
-            val imagesDir = File(context.filesDir, IMAGES_DIR).apply {
+            val userImagesDir = File(context.filesDir, "$IMAGES_DIR/$userId").apply {
                 if (!exists()) mkdirs()
             }
             
             // Create a unique file name based on timestamp
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-            val imageFile = File(imagesDir, "profile_${timestamp}.jpg")
+            val imageFile = File(userImagesDir, "profile_${timestamp}.jpg")
             
             // Get the bitmap from the URI
             val bitmap = getBitmapFromUri(context, imageUri) ?: return false
@@ -69,9 +73,15 @@ object ImageUtils {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, out)
             }
             
-            // Save the file path to preferences
+            // Save the file path to preferences with user-specific key
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            prefs.edit().putString(PROFILE_IMAGE_KEY, imageFile.absolutePath).apply()
+            prefs.edit().putString("$PROFILE_IMAGE_KEY_PREFIX$userId", imageFile.absolutePath).apply()
+            
+            // Also update the user's database entry
+            kotlinx.coroutines.runBlocking {
+                val database = com.example.teleflow.data.TeleFlowDatabase.getDatabase(context)
+                database.userDao().updateProfileImage(userId, imageFile.absolutePath)
+            }
             
             return true
         } catch (e: Exception) {
@@ -85,28 +95,66 @@ object ImageUtils {
      */
     fun loadProfileImage(context: Context, imageView: ImageView) {
         try {
-            // Get image path from preferences
-            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            val imagePath = prefs.getString(PROFILE_IMAGE_KEY, null)
+            // Use AuthManager to get the current user's profile image path from the database
+            val authManager = com.example.teleflow.auth.AuthManager(context)
+            val userId = authManager.getCurrentUserId()
             
-            if (imagePath != null) {
-                // Load image from file
-                val imageFile = File(imagePath)
-                if (imageFile.exists()) {
-                    // Load and display the circular bitmap
-                    val bitmap = BitmapFactory.decodeFile(imagePath)
-                    val circularBitmap = getCircularBitmap(bitmap)
-                    imageView.setImageBitmap(circularBitmap)
+            if (userId != null) {
+                // Get the user from the database directly since we need immediate access
+                val database = com.example.teleflow.data.TeleFlowDatabase.getDatabase(context)
+                val userDao = database.userDao()
+                
+                // Launch a coroutine to get the user data
+                kotlinx.coroutines.runBlocking {
+                    val user = userDao.getUserByIdSync(userId)
+                    if (user != null && user.profileImagePath != null) {
+                        // User has a profile image path stored in the database
+                        val imageFile = File(user.profileImagePath)
+                        if (imageFile.exists()) {
+                            // Load and display the circular bitmap
+                            val bitmap = BitmapFactory.decodeFile(user.profileImagePath)
+                            val circularBitmap = getCircularBitmap(bitmap)
+                            imageView.setImageBitmap(circularBitmap)
+                            
+                            // Clear any tint
+                            imageView.clearColorFilter()
+                            return@runBlocking
+                        }
+                    }
                     
-                    // Clear any tint
+                    // If no user profile image found in database, fall back to shared preferences with user-specific key
+                    val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                    val imagePath = prefs.getString("$PROFILE_IMAGE_KEY_PREFIX$userId", null)
+                    
+                    if (imagePath != null) {
+                        // Load image from file
+                        val imageFile = File(imagePath)
+                        if (imageFile.exists()) {
+                            // Load and display the circular bitmap
+                            val bitmap = BitmapFactory.decodeFile(imagePath)
+                            val circularBitmap = getCircularBitmap(bitmap)
+                            imageView.setImageBitmap(circularBitmap)
+                            
+                            // Also update the user record if possible
+                            if (user != null) {
+                                userDao.updateProfileImage(userId, imagePath)
+                            }
+                            
+                            // Clear any tint
+                            imageView.clearColorFilter()
+                            return@runBlocking
+                        }
+                    }
+                    
+                    // If no saved image or error, show placeholder
+                    imageView.setImageResource(R.drawable.profile_placeholder)
                     imageView.clearColorFilter()
-                    return
                 }
+            } else {
+                // No logged in user, show placeholder
+                imageView.setImageResource(R.drawable.profile_placeholder)
+                imageView.clearColorFilter()
             }
-            
-            // If no saved image or error, show placeholder
-            imageView.setImageResource(R.drawable.profile_placeholder)
-            imageView.clearColorFilter()
             
         } catch (e: Exception) {
             Log.e("ImageUtils", "Error loading profile image", e)
@@ -209,8 +257,12 @@ object ImageUtils {
      * Clear saved profile image
      */
     fun clearProfileImage(context: Context) {
+        // Get current user ID
+        val authManager = com.example.teleflow.auth.AuthManager(context)
+        val userId = authManager.getCurrentUserId() ?: return
+        
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val imagePath = prefs.getString(PROFILE_IMAGE_KEY, null)
+        val imagePath = prefs.getString("$PROFILE_IMAGE_KEY_PREFIX$userId", null)
         
         // Delete file if it exists
         if (imagePath != null) {
@@ -220,8 +272,14 @@ object ImageUtils {
             }
         }
         
-        // Clear preference
-        prefs.edit().remove(PROFILE_IMAGE_KEY).apply()
+        // Clear preference for this user only
+        prefs.edit().remove("$PROFILE_IMAGE_KEY_PREFIX$userId").apply()
+        
+        // Also clear the database entry
+        kotlinx.coroutines.runBlocking {
+            val database = com.example.teleflow.data.TeleFlowDatabase.getDatabase(context)
+            database.userDao().clearProfileImage(userId)
+        }
     }
     
     /**

@@ -1,6 +1,7 @@
 package com.example.teleflow.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -183,13 +184,27 @@ class EditProfileFragment : Fragment() {
         // Image path to save
         var imagePath: String? = null
         
-        // Save the profile image
+        // Save the profile image and get the user-specific path
         if (selectedImageUri != null) {
             val saved = ImageUtils.saveProfileImage(requireContext(), selectedImageUri)
             if (!saved) {
                 Toast.makeText(requireContext(), "Failed to save profile image", Toast.LENGTH_SHORT).show()
             } else {
-                imagePath = selectedImageUri.toString()
+                // The image path is already saved to the database by the ImageUtils.saveProfileImage method
+                // Get current user
+                val userId = authViewModel.getCurrentUserId() ?: 0
+                
+                // Get the database directly to retrieve the user
+                val userDao = com.example.teleflow.data.TeleFlowDatabase.getDatabase(requireContext()).userDao()
+                
+                // Get the profile image path from user object
+                kotlinx.coroutines.runBlocking {
+                    val user = userDao.getUserByIdSync(userId)
+                    imagePath = user?.profileImagePath
+                    
+                    // Log for debugging
+                    Log.d("EditProfileFragment", "User ID: $userId, Image path: $imagePath")
+                }
             }
         }
         

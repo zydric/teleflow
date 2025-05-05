@@ -70,4 +70,16 @@ interface UserDao {
      */
     @Query("UPDATE users SET lastLoginAt = :date WHERE id = :userId")
     suspend fun updateLastLogin(userId: Int, date: Date)
+    
+    /**
+     * Update user's profile image path
+     */
+    @Query("UPDATE users SET profileImagePath = :imagePath WHERE id = :userId")
+    suspend fun updateProfileImage(userId: Int, imagePath: String)
+    
+    /**
+     * Clear user's profile image path
+     */
+    @Query("UPDATE users SET profileImagePath = NULL WHERE id = :userId")
+    suspend fun clearProfileImage(userId: Int)
 } 

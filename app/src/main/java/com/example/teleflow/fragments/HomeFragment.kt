@@ -12,6 +12,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -36,6 +37,10 @@ class HomeFragment : Fragment() {
     private lateinit var scriptItem1: View
     private lateinit var scriptItem2: View
     private lateinit var scriptItem3: View
+    
+    // Empty state views
+    private lateinit var scriptsEmptyStateLayout: ConstraintLayout
+    private lateinit var recordingsEmptyStateLayout: ConstraintLayout
     
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val recordingViewModel: RecordingViewModel by viewModels()
@@ -66,6 +71,10 @@ class HomeFragment : Fragment() {
         scriptItem1 = view.findViewById(R.id.script_item_1)
         scriptItem2 = view.findViewById(R.id.script_item_2)
         scriptItem3 = view.findViewById(R.id.script_item_3)
+        
+        // Find empty state layouts
+        scriptsEmptyStateLayout = view.findViewById(R.id.layout_empty_scripts)
+        recordingsEmptyStateLayout = view.findViewById(R.id.layout_empty_recordings)
         
         // Initially hide all script items until data is loaded
         scriptItem1.visibility = View.GONE
@@ -119,6 +128,30 @@ class HomeFragment : Fragment() {
         recordingViewModel.userRecentRecordings.observe(viewLifecycleOwner, Observer { recordings ->
             // Update the adapter with the recordings (already limited in the ViewModel)
             recordingAdapter.updateData(recordings)
+            
+            // Toggle visibility of empty state view
+            if (recordings.isEmpty()) {
+                recordingsEmptyStateLayout.visibility = View.VISIBLE
+                recordingsRecyclerView.visibility = View.GONE
+                
+                // Make the empty state image very large
+                val emptyRecordingsImage = view.findViewById<ImageView>(R.id.imageView_empty_recordings)
+                emptyRecordingsImage?.let {
+                    val layoutParams = it.layoutParams
+                    layoutParams.height = 600 // Set explicit large height (600dp)
+                    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    it.layoutParams = layoutParams
+                    it.setPadding(0, 100, 0, 100) // Reduced padding to give more room for the image
+                    it.scaleType = ImageView.ScaleType.FIT_CENTER
+                    it.adjustViewBounds = true // Allow the image to maintain aspect ratio
+                }
+                
+                // Also set minimum height for the empty state container
+                recordingsEmptyStateLayout.minimumHeight = 800 // Set explicit large minimum height
+            } else {
+                recordingsEmptyStateLayout.visibility = View.GONE
+                recordingsRecyclerView.visibility = View.VISIBLE
+            }
         })
     }
     
@@ -131,17 +164,55 @@ class HomeFragment : Fragment() {
         scriptItem2.visibility = View.GONE
         scriptItem3.visibility = View.GONE
         
-        // Populate script items based on available data
-        if (recentScripts.isNotEmpty()) {
-            updateScriptItem(scriptItem1, recentScripts[0], 0)
-        }
-        
-        if (recentScripts.size > 1) {
-            updateScriptItem(scriptItem2, recentScripts[1], 1)
-        }
-        
-        if (recentScripts.size > 2) {
-            updateScriptItem(scriptItem3, recentScripts[2], 2)
+        // Toggle visibility of empty state layout
+        if (recentScripts.isEmpty()) {
+            scriptsEmptyStateLayout.visibility = View.VISIBLE
+            
+            // Add more space between Recent Scripts and Recent Recordings sections
+            val recentRecordingsTextView = view?.findViewById<TextView>(R.id.textView_recentRecordings)
+            recentRecordingsTextView?.let {
+                val layoutParams = it.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.topMargin = resources.getDimensionPixelSize(R.dimen.empty_state_section_margin)
+                it.layoutParams = layoutParams
+            }
+            
+            // Make the empty state image very large
+            val emptyScriptsImage = view?.findViewById<ImageView>(R.id.imageView_empty_scripts)
+            emptyScriptsImage?.let {
+                val layoutParams = it.layoutParams
+                layoutParams.height = 600 // Set explicit large height (600dp)
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                it.layoutParams = layoutParams
+                it.setPadding(0, 100, 0, 100) // Reduced padding to give more room for the image
+                it.scaleType = ImageView.ScaleType.FIT_CENTER
+                it.adjustViewBounds = true // Allow the image to maintain aspect ratio
+            }
+            
+            // Also set minimum height for the empty state container
+            scriptsEmptyStateLayout.minimumHeight = 800 // Set explicit large minimum height
+        } else {
+            scriptsEmptyStateLayout.visibility = View.GONE
+            
+            // Reset the margin to normal when scripts are available
+            val recentRecordingsTextView = view?.findViewById<TextView>(R.id.textView_recentRecordings)
+            recentRecordingsTextView?.let {
+                val layoutParams = it.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.topMargin = resources.getDimensionPixelSize(R.dimen.section_vertical_spacing)
+                it.layoutParams = layoutParams
+            }
+            
+            // Populate script items based on available data
+            if (recentScripts.isNotEmpty()) {
+                updateScriptItem(scriptItem1, recentScripts[0], 0)
+            }
+            
+            if (recentScripts.size > 1) {
+                updateScriptItem(scriptItem2, recentScripts[1], 1)
+            }
+            
+            if (recentScripts.size > 2) {
+                updateScriptItem(scriptItem3, recentScripts[2], 2)
+            }
         }
     }
     

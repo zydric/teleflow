@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -29,7 +29,7 @@ class ScriptsFragment : Fragment() {
 
     private lateinit var scriptsRecyclerView: RecyclerView
     private lateinit var addScriptFab: FloatingActionButton
-    private lateinit var emptyStateTextView: TextView
+    private lateinit var emptyStateImageView: ImageView
     private val scriptViewModel: ScriptViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
     private lateinit var scriptAdapter: ScriptAdapter
@@ -63,7 +63,7 @@ class ScriptsFragment : Fragment() {
             scriptsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             
             // Initialize empty state view
-            emptyStateTextView = view.findViewById(R.id.textView_emptyScripts)
+            emptyStateImageView = view.findViewById(R.id.imageView_emptyScripts)
             
             // Set up FAB
             addScriptFab = view.findViewById(R.id.fab_addScript)
@@ -109,10 +109,10 @@ class ScriptsFragment : Fragment() {
                 
                 // Toggle visibility of empty state view
                 if (scripts.isEmpty()) {
-                    emptyStateTextView.visibility = View.VISIBLE
+                    emptyStateImageView.visibility = View.VISIBLE
                     scriptsRecyclerView.visibility = View.GONE
                 } else {
-                    emptyStateTextView.visibility = View.GONE
+                    emptyStateImageView.visibility = View.GONE
                     scriptsRecyclerView.visibility = View.VISIBLE
                 }
             })

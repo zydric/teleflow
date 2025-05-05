@@ -71,6 +71,34 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp" />
             </LinearLayout>
+            
+            <!-- Empty state for scripts -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_empty_scripts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_recentScripts"
+                app:layout_constraintBottom_toTopOf="@+id/textView_recentRecordings">
+
+                <ImageView
+                    android:id="@+id/imageView_empty_scripts"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/scripts_empty_state_no_bg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:contentDescription="No scripts found" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Recordings header row with View All button -->
             <TextView
@@ -78,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/screen_horizontal_margin"
-                android:layout_marginTop="@dimen/section_vertical_spacing"
+                android:layout_marginTop="48dp"
                 android:text="@string/recent_recordings"
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
@@ -115,6 +143,33 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_recentRecordings" />
+                
+            <!-- Empty state for recordings -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_empty_recordings"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_recentRecordings">
+
+                <ImageView
+                    android:id="@+id/imageView_empty_recordings"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/recordings_empty_state_no_bg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:contentDescription="No recordings found" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -127,11 +182,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:padding="12dp"
         android:text="@string/record_new_video"
         android:textAllCaps="false"
-        android:textSize="18sp"
         android:textStyle="bold"
+        android:textSize="16sp"
+        android:letterSpacing="0.01"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="16dp"
         android:textColor="@color/background_color"
         android:background="@drawable/button_primary_background"
         app:layout_constraintBottom_toBottomOf="parent"

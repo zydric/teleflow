@@ -136,10 +136,13 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_primary_background"
             android:padding="16dp"
+            android:textSize="16sp"
+            android:letterSpacing="0.01"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/background_color"
             android:text="Save changes"
             android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp" />
 
@@ -152,8 +155,12 @@
             android:textSize="16sp"
             android:padding="16dp"
             android:gravity="center"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
             android:background="@drawable/button_cancel_background"
             android:textAllCaps="false"
+            android:textStyle="bold"
+            android:letterSpacing="0.04"
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>

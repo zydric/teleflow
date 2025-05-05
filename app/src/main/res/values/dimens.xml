@@ -8,6 +8,12 @@
     <dimen name="screen_vertical_margin">16dp</dimen>
     <dimen name="section_vertical_spacing">24dp</dimen>
     
+    <!-- Empty state spacing -->
+    <dimen name="empty_state_additional_margin">80dp</dimen>
+    <dimen name="empty_state_image_height">200dp</dimen>
+    <dimen name="empty_state_container_min_height">300dp</dimen>
+    <dimen name="empty_state_section_margin">120dp</dimen>
+    
     <!-- Other dimensions can be added here as needed -->
     <dimen name="text_margin">16dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>

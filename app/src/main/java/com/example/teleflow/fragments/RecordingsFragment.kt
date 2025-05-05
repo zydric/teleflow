@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -24,6 +25,7 @@ class RecordingsFragment : Fragment() {
 
     private lateinit var recordingsRecyclerView: RecyclerView
     private lateinit var recordingAdapter: RecordingAdapter
+    private lateinit var emptyStateImageView: ImageView
     
     private val recordingViewModel: RecordingViewModel by viewModels()
     private val scriptViewModel: ScriptViewModel by viewModels()
@@ -49,6 +51,9 @@ class RecordingsFragment : Fragment() {
 
         // Set up recordings RecyclerView with GridLayoutManager
         recordingsRecyclerView = view.findViewById(R.id.recyclerView_recordings_list)
+        
+        // Initialize empty state view
+        emptyStateImageView = view.findViewById(R.id.imageView_no_recordings)
         
         // Use a GridLayoutManager with 2 columns
         val gridLayoutManager = GridLayoutManager(requireContext(), 2)
@@ -81,8 +86,15 @@ class RecordingsFragment : Fragment() {
         // Observe the user recordings from ViewModel instead of all recordings
         recordingViewModel.userRecordings.observe(viewLifecycleOwner, Observer { recordings ->
             recordingAdapter.updateData(recordings)
-            view.findViewById<View>(R.id.textView_no_recordings).visibility = 
-                if (recordings.isEmpty()) View.VISIBLE else View.GONE
+            
+            // Toggle visibility of empty state view
+            if (recordings.isEmpty()) {
+                emptyStateImageView.visibility = View.VISIBLE
+                recordingsRecyclerView.visibility = View.GONE
+            } else {
+                emptyStateImageView.visibility = View.GONE
+                recordingsRecyclerView.visibility = View.VISIBLE
+            }
         })
     }
     

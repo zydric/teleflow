@@ -20,17 +20,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_recording" />
 
-    <TextView
-        android:id="@+id/textView_no_recordings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No recordings yet. Record a video from the Record tab."
-        android:textAlignment="center"
-        android:textSize="18sp"
+    <!-- Empty state image -->
+    <ImageView
+        android:id="@+id/imageView_no_recordings"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/recordings_empty_state_no_bg"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="No recordings yet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout> 

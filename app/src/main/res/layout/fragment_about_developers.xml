@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- Section Title -->
             <TextView
                 android:id="@+id/section_title"
                 android:layout_width="match_parent"
@@ -35,7 +34,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Developer Card 1 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/developer_card_1"
                 android:layout_width="match_parent"
@@ -53,7 +51,6 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
-                    <!-- Developer Profile Image with better circular approach -->
                     <ImageView
                         android:id="@+id/developer_image_1"
                         android:layout_width="70dp"
@@ -67,7 +64,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <!-- Developer Name -->
                     <TextView
                         android:id="@+id/developer_name_1"
                         android:layout_width="0dp"
@@ -81,7 +77,6 @@
                         app:layout_constraintStart_toEndOf="@+id/developer_image_1"
                         app:layout_constraintTop_toTopOf="@+id/developer_image_1" />
 
-                    <!-- Developer Role -->
                     <TextView
                         android:id="@+id/developer_role_1"
                         android:layout_width="0dp"
@@ -94,7 +89,6 @@
                         app:layout_constraintStart_toEndOf="@+id/developer_image_1"
                         app:layout_constraintTop_toBottomOf="@+id/developer_name_1" />
 
-                    <!-- Developer Bio -->
                     <TextView
                         android:id="@+id/developer_bio_1"
                         android:layout_width="match_parent"
@@ -107,7 +101,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/developer_image_1" />
 
-                    <!-- Developer Email -->
                     <ImageView
                         android:id="@+id/email_icon_1"
                         android:layout_width="16dp"
@@ -132,7 +125,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Developer Card 2 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/developer_card_2"
                 android:layout_width="match_parent"
@@ -150,7 +142,6 @@
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
-                    <!-- Developer Profile Image with better circular approach -->
                     <ImageView
                         android:id="@+id/developer_image_2"
                         android:layout_width="70dp"
@@ -164,7 +155,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <!-- Developer Name -->
                     <TextView
                         android:id="@+id/developer_name_2"
                         android:layout_width="0dp"
@@ -178,7 +168,6 @@
                         app:layout_constraintStart_toEndOf="@+id/developer_image_2"
                         app:layout_constraintTop_toTopOf="@+id/developer_image_2" />
 
-                    <!-- Developer Role -->
                     <TextView
                         android:id="@+id/developer_role_2"
                         android:layout_width="0dp"
@@ -191,7 +180,6 @@
                         app:layout_constraintStart_toEndOf="@+id/developer_image_2"
                         app:layout_constraintTop_toBottomOf="@+id/developer_name_2" />
 
-                    <!-- Developer Bio -->
                     <TextView
                         android:id="@+id/developer_bio_2"
                         android:layout_width="match_parent"
@@ -204,7 +192,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/developer_image_2" />
 
-                    <!-- Developer Email -->
                     <ImageView
                         android:id="@+id/email_icon_2"
                         android:layout_width="16dp"
@@ -229,7 +216,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- App Version Footer -->
             <TextView
                 android:id="@+id/app_version"
                 android:layout_width="wrap_content"

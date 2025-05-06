@@ -17,7 +17,6 @@ class RecordingViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository: TeleFlowRepository
     private val authManager: AuthManager = AuthManager(application)
     
-    // Legacy LiveData - for backward compatibility
     val allRecordings: LiveData<List<Recording>>
     
     // LiveData to observe current user's recordings

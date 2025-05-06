@@ -7,7 +7,6 @@
     android:background="@android:color/black"
     tools:context=".fragments.RecordFragment">
 
-    <!-- Full-screen camera preview -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="0dp"
@@ -17,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Script overlay with semi-transparent background -->
     <ScrollView
         android:id="@+id/scrollView_script"
         android:layout_width="0dp"
@@ -40,7 +38,6 @@
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit." />
     </ScrollView>
 
-    <!-- Center timer container -->
     <LinearLayout
         android:id="@+id/timer_container"
         android:layout_width="wrap_content"
@@ -52,7 +49,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Recording timer -->
         <TextView
             android:id="@+id/textView_timer"
             android:layout_width="wrap_content"
@@ -62,7 +58,6 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <!-- Bottom control panel -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/controlPanel"
         android:layout_width="0dp"
@@ -74,7 +69,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Bottom row with back button, record button -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_row"
             android:layout_width="0dp"
@@ -85,13 +79,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/control_row">
 
-            <!-- Back button -->
             <FrameLayout
                 android:id="@+id/button_back"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="24dp"
-                android:background="@drawable/back_button_background"
+                android:background="@drawable/control_button_background"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -103,10 +96,9 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:contentDescription="Back"
-                    android:src="@drawable/ic_back_arrow" />
+                    android:src="@drawable/ic_back" />
             </FrameLayout>
 
-            <!-- Record button -->
             <FrameLayout
                 android:id="@+id/button_record"
                 android:layout_width="56dp"
@@ -126,7 +118,6 @@
                     android:contentDescription="Record" />
             </FrameLayout>
 
-            <!-- Gallery/Media button -->
             <FrameLayout
                 android:id="@+id/button_media"
                 android:layout_width="48dp"
@@ -148,7 +139,6 @@
             </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Control row with sliders -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/control_row"
             android:layout_width="0dp"
@@ -160,7 +150,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Opacity Control -->
             <LinearLayout
                 android:id="@+id/opacity_control_group"
                 android:layout_width="wrap_content"
@@ -213,7 +202,6 @@
                     android:thumbTint="#FFCC00" />
             </LinearLayout>
 
-            <!-- Vertical Divider 1 -->
             <View
                 android:id="@+id/divider1"
                 android:layout_width="1dp"
@@ -224,7 +212,6 @@
                 app:layout_constraintStart_toEndOf="@+id/opacity_control_group"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Font Size Control -->
             <LinearLayout
                 android:id="@+id/font_size_control_group"
                 android:layout_width="wrap_content"
@@ -277,7 +264,6 @@
                     android:thumbTint="#FFCC00" />
             </LinearLayout>
 
-            <!-- Vertical Divider 2 -->
             <View
                 android:id="@+id/divider2"
                 android:layout_width="1dp"
@@ -288,7 +274,6 @@
                 app:layout_constraintStart_toEndOf="@+id/font_size_control_group"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Speed Control -->
             <LinearLayout
                 android:id="@+id/speed_control_group"
                 android:layout_width="wrap_content"
@@ -341,7 +326,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Loading placeholder message -->
     <TextView
         android:id="@+id/textView_placeholder"
         android:layout_width="wrap_content"

@@ -12,19 +12,16 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
-    <!-- Profile Image with Gradient Border -->
     <FrameLayout
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical">
         
-        <!-- Gradient Border -->
         <View
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/profile_image_border" />
         
-        <!-- Profile Image -->
         <ImageView
             android:id="@+id/profile_image"
             android:layout_width="44dp"
@@ -41,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:orientation="vertical">
-        <!-- User Name -->
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
@@ -52,7 +48,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- User Email -->
         <TextView
             android:id="@+id/user_email"
             android:layout_width="wrap_content"

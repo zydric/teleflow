@@ -7,35 +7,27 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
-    <!-- New custom colors - replace with your preferred colors -->
-    <color name="primary">#FF000000</color> <!-- For ActionBar -->
-    <color name="primary_dark">#FF000000</color> <!-- Status bar color -->
-    <color name="accent">#FFCC00</color> <!-- Accents like selected items -->
-    <color name="bottom_nav_color">#FF000000</color> <!-- Color for bottom navigation -->
 
-    <!-- Background color for all pages -->
+    <color name="primary">#FF000000</color>
+    <color name="primary_dark">#FF000000</color>
+    <color name="accent">#FFCC00</color>
+    <color name="bottom_nav_color">#FF000000</color>
+
     <color name="background_color">#111827</color>
 
-    <!-- Nav bars, action bars, and cards -->
     <color name="nav_bar_color">#1F2937</color>
     <color name="card_color">#2B384A</color>
     <color name="nav_bar_border_color">#374151</color>
 
-    <!-- Buttons, title of the logo in the home screen, active state of nav items -->
     <color name="active_color">#FFCC00</color>
 
-    <!-- Headings and subheadings -->
     <color name="heading_color">#E5E7EB</color>
 
-    <!-- Paragraph, text, icon color (inactive) -->
     <color name="text_color">#9CA3AF</color>
 
-    <!-- Red for logout -->
     <color name="logout_color">#EF4444</color>
     
-    <!-- Password strength indicator colors -->
-    <color name="yellow_darker">#E6B800</color> <!-- Darker version of accent yellow -->
-    <color name="primary_button_color">#10B981</color> <!-- Green for success/strong -->
-    <color name="accent_color">#FFCC00</color> <!-- Same as active_color for consistency -->
+    <color name="yellow_darker">#E6B800</color>
+    <color name="primary_button_color">#10B981</color>
+    <color name="accent_color">#FFCC00</color>
 </resources>

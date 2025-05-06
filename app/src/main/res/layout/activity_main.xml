@@ -56,10 +56,8 @@
         android:background="@color/nav_bar_color"
         android:elevation="16dp">
         
-        <!-- Include the custom header layout -->
         <include layout="@layout/nav_header" />
         
-        <!-- Include the custom menu items layout -->
         <include layout="@layout/drawer_menu_layout" />
     </LinearLayout>
 

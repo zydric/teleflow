@@ -34,7 +34,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Scripts displayed vertically with a fixed height and no scrolling -->
             <LinearLayout
                 android:id="@+id/linearLayout_scripts"
                 android:layout_width="0dp"
@@ -47,7 +46,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_recentScripts">
 
-                <!-- Script item 1 with increased margin -->
                 <include
                     android:id="@+id/script_item_1"
                     layout="@layout/item_script"
@@ -55,7 +53,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Script item 2 with increased margin -->
                 <include
                     android:id="@+id/script_item_2"
                     layout="@layout/item_script"
@@ -63,7 +60,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Script item 3 with increased margin -->
                 <include
                     android:id="@+id/script_item_3"
                     layout="@layout/item_script"
@@ -72,7 +68,6 @@
                     android:layout_marginBottom="12dp" />
             </LinearLayout>
             
-            <!-- Empty state for scripts -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_empty_scripts"
                 android:layout_width="0dp"
@@ -100,7 +95,6 @@
                     android:contentDescription="No scripts found" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Recordings header row with View All button -->
             <TextView
                 android:id="@+id/textView_recentRecordings"
                 android:layout_width="wrap_content"
@@ -129,7 +123,6 @@
                 app:layout_constraintTop_toTopOf="@+id/textView_recentRecordings"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_recentRecordings" />
 
-            <!-- Recordings displayed horizontally with scrolling -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_recordings"
                 android:layout_width="0dp"
@@ -144,7 +137,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_recentRecordings" />
                 
-            <!-- Empty state for recordings -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_empty_recordings"
                 android:layout_width="0dp"
@@ -174,7 +166,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Fixed Record New Video button at the bottom with proper margins -->
     <Button
         android:id="@+id/button_recordNew"
         android:layout_width="match_parent"

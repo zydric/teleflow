@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Background color -->
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/background_color" />
         </shape>
     </item>
     
-    <!-- Play icon in the center -->
     <item android:gravity="center">
         <vector
             android:width="48dp"
@@ -20,7 +18,6 @@
         </vector>
     </item>
     
-    <!-- Video camera icon in bottom corner -->
     <item android:gravity="bottom|end" android:bottom="8dp" android:right="8dp">
         <vector
             android:width="24dp"

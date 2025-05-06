@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_recording" />
 
-    <!-- Empty state image -->
+    <!-- empty state -->
     <ImageView
         android:id="@+id/imageView_no_recordings"
         android:layout_width="0dp"

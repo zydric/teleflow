@@ -3,9 +3,6 @@ package com.example.teleflow.database
 import androidx.room.TypeConverter
 import java.util.Date
 
-/**
- * Type converters for Room database
- */
 class Converters {
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {

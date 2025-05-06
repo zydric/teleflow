@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Red circle background -->
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/logout_color" />
@@ -10,7 +9,6 @@
         </shape>
     </item>
     
-    <!-- White square indicator -->
     <item android:gravity="center">
         <shape android:shape="rectangle">
             <solid android:color="@android:color/white" />

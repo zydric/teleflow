@@ -35,13 +35,10 @@ class EditProfileFragment : Fragment() {
     private lateinit var saveButton: Button
     private lateinit var cancelButton: TextView
 
-    // URI for the selected profile image
     private var selectedImageUri: Uri? = null
     
-    // ViewModel for authentication
     private val authViewModel: AuthViewModel by viewModels()
 
-    // Activity result launcher for image picking
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -49,11 +46,9 @@ class EditProfileFragment : Fragment() {
             result.data?.data?.let { uri ->
                 selectedImageUri = uri
                 try {
-                    // Use our utility method to create and display a circular bitmap immediately
                     val circularBitmap = ImageUtils.createCircularBitmapFromUri(requireContext(), uri)
                     if (circularBitmap != null) {
                         profileImage.setImageBitmap(circularBitmap)
-                        // Remove any tint and padding
                         profileImage.clearColorFilter()
                         profileImage.setPadding(0, 0, 0, 0)
                     } else {
@@ -71,24 +66,19 @@ class EditProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set action bar title
         requireActivity().title = "Edit Profile"
         
-        // Check if user is logged in
         if (!authViewModel.isLoggedIn()) {
-            // Redirect to login screen if not logged in
             findNavController().navigate(R.id.loginFragment)
             return
         }
 
-        // Initialize UI components
         profileImage = view.findViewById(R.id.profile_image)
         cameraButton = view.findViewById(R.id.camera_button)
         nameInput = view.findViewById(R.id.name_input)

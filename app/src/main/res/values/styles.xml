@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Style for the bottom navigation -->
     <style name="BottomNavigationStyle">
         <item name="android:background">@color/bottom_nav_color</item>
         <item name="itemIconTint">@color/white</item>
         <item name="itemTextColor">@color/white</item>
     </style>
 
-    <!-- Custom TextInputLayout style for login forms -->
     <style name="Widget.TeleFlow.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/card_color</item>
         <item name="boxStrokeColor">@color/nav_bar_border_color</item>
@@ -24,7 +22,6 @@
         <item name="errorTextColor">@color/logout_color</item>
     </style>
     
-    <!-- Style for Alert Dialogs -->
     <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="android:windowBackground">@color/nav_bar_color</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
@@ -52,7 +49,6 @@
         <item name="android:textColor">@color/text_color</item>
     </style>
     
-    <!-- Style for consistent helper/error text in TextInputLayouts -->
     <style name="HelperTextAppearance" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>

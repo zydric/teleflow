@@ -2,111 +2,95 @@
 <resources>
 
     <style name="Theme.TeleFlow" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color -->
+        <!-- brand color -->
         <item name="colorPrimary">@color/active_color</item>
         <item name="colorPrimaryDark">@color/nav_bar_color</item>
         <item name="colorAccent">@color/active_color</item>
         
-        <!-- Window/background colors -->
+        <!-- window/background colors -->
         <item name="android:windowBackground">@color/background_color</item>
         
-        <!-- Text colors -->
+        <!-- text colors -->
         <item name="android:textColorPrimary">@color/heading_color</item>
         <item name="android:textColorSecondary">@color/text_color</item>
         
-        <!-- Status bar color -->
+        <!-- status bar color -->
         <item name="android:statusBarColor">@color/nav_bar_color</item>
         
-        <!-- Navigation bar color -->
+        <!-- nav bar color -->
         <item name="android:navigationBarColor">@color/nav_bar_color</item>
         
-        <!-- Action bar styling -->
+        <!-- action bar styling -->
         <item name="actionBarStyle">@style/TeleFlow.ActionBar</item>
         
-        <!-- Bottom navigation styling -->
+        <!-- bottom nav styling -->
         <item name="bottomNavigationStyle">@style/TeleFlow.BottomNavigation</item>
     </style>
     
-    <!-- ActionBar style -->
+    <!-- action bar style -->
     <style name="TeleFlow.ActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="background">@color/nav_bar_color</item>
         <item name="titleTextStyle">@style/TeleFlow.ActionBar.TitleTextStyle</item>
-        <item name="homeAsUpIndicator">@drawable/ic_back_white</item>
+        <item name="homeAsUpIndicator">@drawable/ic_back</item>
     </style>
     
     <style name="TeleFlow.ActionBar.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/heading_color</item>
     </style>
     
-    <!-- Bottom Navigation style -->
+    <!-- bottom nav style -->
     <style name="TeleFlow.BottomNavigation" parent="Widget.Design.BottomNavigationView">
         <item name="android:background">@color/nav_bar_color</item>
         <item name="itemIconTint">@color/bottom_nav_item_color</item>
         <item name="itemTextColor">@color/bottom_nav_item_color</item>
     </style>
     
-    <!-- No Action Bar theme for RecordFragment -->
     <style name="Theme.TeleFlow.NoActionBar" parent="Theme.AppCompat.NoActionBar">
-        <!-- Primary brand color -->
         <item name="colorPrimary">@color/active_color</item>
         <item name="colorPrimaryDark">@color/nav_bar_color</item>
         <item name="colorAccent">@color/active_color</item>
         
-        <!-- Window/background colors -->
         <item name="android:windowBackground">@android:color/black</item>
         
-        <!-- Text colors -->
         <item name="android:textColorPrimary">@color/heading_color</item>
         <item name="android:textColorSecondary">@color/text_color</item>
         
-        <!-- Status bar color -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         
-        <!-- Navigation bar color -->
         <item name="android:navigationBarColor">@color/nav_bar_color</item>
         <item name="android:windowTranslucentNavigation">false</item>
         
-        <!-- Full screen flags -->
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         
-        <!-- For Android 5.0+ specific -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         
-        <!-- Force disable action bar -->
         <item name="actionBarSize">0dp</item>
     </style>
 
-    <!-- Login theme without action bar but with status bar -->
     <style name="Theme.TeleFlow.Login" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/accent</item>
         <item name="colorPrimaryVariant">@color/active_color</item>
         <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/active_color</item>
         <item name="colorSecondaryVariant">@color/yellow_darker</item>
         <item name="colorOnSecondary">@color/black</item>
 
-        <!-- Status bar and navigation bar colors -->
         <item name="android:statusBarColor">@color/background_color</item>
         <item name="android:navigationBarColor">@color/nav_bar_color</item>
         <item name="android:windowBackground">@color/background_color</item>
         
-        <!-- Disable only action bar, not status bar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="actionBarSize">0dp</item>
         
-        <!-- Text colors -->
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorSecondary">@color/text_color</item>
         <item name="android:textColorHint">@color/text_color</item>
         
-        <!-- TextInputLayout styles -->
         <item name="textInputStyle">@style/Widget.TeleFlow.TextInputLayout</item>
     </style>
 </resources>

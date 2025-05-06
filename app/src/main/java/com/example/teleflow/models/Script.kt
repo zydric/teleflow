@@ -21,10 +21,10 @@ import java.util.Date
 data class Script(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: Int, // Foreign key to User
+    val userId: Int,
     val title: String,
     val content: String,
     val createdAt: Date = Date(),
     val lastModifiedAt: Date = Date(),
-    val lastUsedAt: Date? = null // Timestamp when the script was last used for recording
+    val lastUsedAt: Date? = null
 ) 

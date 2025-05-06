@@ -30,11 +30,9 @@ abstract class TeleFlowDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: TeleFlowDatabase? = null
-        
-        // Migration from version 3 to 4 (adding User table and userId to scripts)
+
         private val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Create users table
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `users` (" +
                             "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -45,8 +43,7 @@ abstract class TeleFlowDatabase : RoomDatabase() {
                             "`createdAt` INTEGER NOT NULL, " +
                             "`lastLoginAt` INTEGER)"
                 )
-                
-                // Create temporary scripts table with userId column
+
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `scripts_new` (" +
                             "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -59,33 +56,26 @@ abstract class TeleFlowDatabase : RoomDatabase() {
                             "FOREIGN KEY(`userId`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)"
                 )
                 
-                // Create a default user
                 database.execSQL(
                     "INSERT INTO `users` (`id`, `email`, `fullName`, `passwordHash`, `profileImagePath`, `createdAt`) " +
                             "VALUES (1, 'default@teleflow.app', 'Default User', '0', NULL, " + System.currentTimeMillis() + ")"
                 )
                 
-                // Copy data from scripts to scripts_new, assigning userId = 1 to all scripts
                 database.execSQL(
                     "INSERT INTO `scripts_new` (`id`, `userId`, `title`, `content`, `createdAt`, `lastModifiedAt`, `lastUsedAt`) " +
                             "SELECT `id`, 1, `title`, `content`, `createdAt`, `lastModifiedAt`, `lastUsedAt` FROM `scripts`"
                 )
                 
-                // Drop the old scripts table
                 database.execSQL("DROP TABLE `scripts`")
                 
-                // Rename the new scripts table
                 database.execSQL("ALTER TABLE `scripts_new` RENAME TO `scripts`")
                 
-                // Create index on scripts.userId
                 database.execSQL("CREATE INDEX IF NOT EXISTS `index_scripts_userId` ON `scripts` (`userId`)")
             }
         }
-        
-        // Migration from version 4 to 5 (adding userId to recordings)
+
         private val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Create temporary recordings table with userId column
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `recordings_new` (" +
                             "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -96,22 +86,17 @@ abstract class TeleFlowDatabase : RoomDatabase() {
                             "FOREIGN KEY(`scriptId`) REFERENCES `scripts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE, " +
                             "FOREIGN KEY(`userId`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)"
                 )
-                
-                // Copy data from recordings to recordings_new
-                // For each recording, look up the script's userId and use that for the recording's userId
+
                 database.execSQL(
                     "INSERT INTO `recordings_new` (`id`, `scriptId`, `userId`, `videoUri`, `date`) " +
                             "SELECT r.`id`, r.`scriptId`, s.`userId`, r.`videoUri`, r.`date` " +
                             "FROM `recordings` r JOIN `scripts` s ON r.`scriptId` = s.`id`"
                 )
-                
-                // Drop the old recordings table
+
                 database.execSQL("DROP TABLE `recordings`")
-                
-                // Rename the new recordings table
+
                 database.execSQL("ALTER TABLE `recordings_new` RENAME TO `recordings`")
-                
-                // Create indexes for foreign keys
+
                 database.execSQL("CREATE INDEX IF NOT EXISTS `index_recordings_scriptId` ON `recordings` (`scriptId`)")
                 database.execSQL("CREATE INDEX IF NOT EXISTS `index_recordings_userId` ON `recordings` (`userId`)")
             }

@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@color/nav_bar_color">
 
-    <!-- Recordings Menu Item -->
     <LinearLayout
         android:id="@+id/nav_recordings_item"
         android:layout_width="match_parent"
@@ -36,15 +35,14 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/menu_divider" />
+        android:background="@drawable/section_divider" />
 
-    <!-- Settings Menu Item -->
+    <!-- Settings -->
     <LinearLayout
         android:id="@+id/nav_settings_item"
         android:layout_width="match_parent"
@@ -74,15 +72,14 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/menu_divider" />
+        android:background="@drawable/section_divider" />
 
-    <!-- About Menu Item -->
+    <!-- About -->
     <LinearLayout
         android:id="@+id/nav_about_item"
         android:layout_width="match_parent"
@@ -112,15 +109,14 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/menu_divider" />
+        android:background="@drawable/section_divider" />
 
-    <!-- Logout Menu Item -->
+    <!-- Logout -->
     <LinearLayout
         android:id="@+id/nav_logout_item"
         android:layout_width="match_parent"

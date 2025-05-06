@@ -15,16 +15,13 @@ class TeleFlowRepository(
     private val userDao: UserDao
 ) {
     // Scripts
-    // Legacy methods - for backward compatibility
     val allScripts: LiveData<List<Script>> = scriptDao.getAllScripts()
     val recentlyUsedScripts: LiveData<List<Script>> = scriptDao.getRecentlyUsedScripts()
-    
-    // New methods with userId
+
     fun getUserScripts(userId: Int): LiveData<List<Script>> {
         return scriptDao.getUserScripts(userId)
     }
     
-    // Synchronously get scripts for a specific user (for refreshing LiveData)
     suspend fun getUserScriptsSync(userId: Int): List<Script> {
         return scriptDao.getUserScriptsSync(userId)
     }
@@ -57,22 +54,18 @@ class TeleFlowRepository(
         // Update the lastUsedAt timestamp
         scriptDao.updateLastUsed(id, Date())
     }
-    
-    // User-specific script count
+
     suspend fun getUserScriptCount(userId: Int): Int {
         return scriptDao.getUserScriptCount(userId)
     }
     
     // Recordings
-    // Legacy method - for backward compatibility
     val allRecordings: LiveData<List<Recording>> = recordingDao.getAllRecordings()
     
-    // Get recordings for a specific user
     fun getUserRecordings(userId: Int): LiveData<List<Recording>> {
         return recordingDao.getUserRecordings(userId)
     }
     
-    // Get recent recordings for a user with limit
     fun getRecentUserRecordings(userId: Int, count: Int): LiveData<List<Recording>> {
         return recordingDao.getRecentUserRecordings(userId, count)
     }
@@ -92,8 +85,7 @@ class TeleFlowRepository(
     fun getRecordingsByScriptId(scriptId: Int): LiveData<List<Recording>> {
         return recordingDao.getRecordingsByScriptId(scriptId)
     }
-    
-    // Get recordings for a specific script and user
+
     fun getRecordingsByScriptIdAndUserId(scriptId: Int, userId: Int): LiveData<List<Recording>> {
         return recordingDao.getRecordingsByScriptIdAndUserId(scriptId, userId)
     }
@@ -143,7 +135,7 @@ class TeleFlowRepository(
         return userDao.login(email, passwordHash)
     }
     
-    // Helper method to create a repository
+    // create repo method
     companion object {
         @Volatile
         private var INSTANCE: TeleFlowRepository? = null

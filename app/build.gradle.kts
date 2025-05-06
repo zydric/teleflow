@@ -50,8 +50,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    
-    // Add explicit kapt configuration for databinding
+
     kapt {
         correctErrorTypes = true
         generateStubs = true
@@ -99,7 +98,7 @@ dependencies {
     implementation("androidx.camera:camera-view:1.3.1")
     implementation("androidx.camera:camera-extensions:1.3.1")
     
-    // Room Database - corrected implementation
+    // Room Database
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion") 

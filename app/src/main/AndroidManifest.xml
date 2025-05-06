@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Camera and audio permissions for recording -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-feature android:name="android.hardware.camera" />
     
-    <!-- Storage permissions for accessing video files -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -35,19 +33,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             
-            <!-- Theme override for RecordFragment -->
             <meta-data
                 android:name="android.app.default_fullscreen"
                 android:value="true" />
         </activity>
         
-        <!-- Dedicated RecordActivity with NoActionBar theme -->
         <activity
             android:name=".RecordActivity"
             android:theme="@style/Theme.TeleFlow.NoActionBar" 
             android:exported="false" />
         
-        <!-- FileProvider for sharing videos -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.teleflow.fileprovider"

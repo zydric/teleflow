@@ -15,18 +15,15 @@ class AboutDevelopersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_about_developers, container, false)
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        // Get the ImageViews
+
         val devImage1 = view.findViewById<ImageView>(R.id.developer_image_1)
         val devImage2 = view.findViewById<ImageView>(R.id.developer_image_2)
-        
-        // Set ClipToOutline to true for API level < 21
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             devImage1.clipToOutline = true
             devImage2.clipToOutline = true

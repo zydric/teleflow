@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- General Settings Section -->
         <TextView
             android:id="@+id/general_section_title"
             android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
 
-        <!-- Account Settings Item -->
         <LinearLayout
             android:id="@+id/account_settings_item"
             android:layout_width="match_parent"
@@ -56,11 +54,10 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_chevron_right_settings"
+                android:src="@drawable/ic_chevron_right"
                 android:contentDescription="Chevron right" />
         </LinearLayout>
 
-        <!-- Change Password Item -->
         <LinearLayout
             android:id="@+id/change_password_item"
             android:layout_width="match_parent"
@@ -91,11 +88,10 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_chevron_right_settings"
+                android:src="@drawable/ic_chevron_right"
                 android:contentDescription="Chevron right" />
         </LinearLayout>
 
-        <!-- About TeleFlow Item -->
         <LinearLayout
             android:id="@+id/about_teleflow_item"
             android:layout_width="match_parent"
@@ -126,11 +122,10 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_chevron_right_settings"
+                android:src="@drawable/ic_chevron_right"
                 android:contentDescription="Chevron right" />
         </LinearLayout>
 
-        <!-- Script Overlay Settings Section -->
         <TextView
             android:id="@+id/overlay_section_title"
             android:layout_width="match_parent"
@@ -142,7 +137,6 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp" />
 
-        <!-- Font Size Control -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
@@ -205,7 +199,6 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Font Color Selection -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -320,7 +313,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Overlay Opacity Slider -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -364,7 +356,6 @@
                 android:paddingEnd="0dp" />
         </LinearLayout>
 
-        <!-- Scroll Speed Slider -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

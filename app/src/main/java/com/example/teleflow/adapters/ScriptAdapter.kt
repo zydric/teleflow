@@ -30,39 +30,34 @@ class ScriptAdapter(
     override fun onBindViewHolder(holder: ScriptViewHolder, position: Int) {
         val script = scripts[position]
         holder.titleTextView.text = script.title
-        
-        // Show a preview of the content (first 50 characters)
+
         val previewContent = if (script.content.length > 50) {
             script.content.substring(0, 50) + "..."
         } else {
             script.content
         }
         holder.contentTextView.text = previewContent
-        
-        // Set up click listener
+
         holder.itemView.setOnClickListener {
             onItemClick(script)
         }
-        
-        // Set up a click listener for the "more options" icon
+
         onItemLongClick?.let { longClickHandler ->
             holder.moreOptionsImageView.setOnClickListener { view ->
                 longClickHandler(script, view)
             }
         }
-        
-        // Set up long-click listener if provided
+
         onItemLongClick?.let { longClickHandler ->
             holder.itemView.setOnLongClickListener { view ->
                 longClickHandler(script, view)
-                true // Return true to indicate the long press was handled
+                true
             }
         }
     }
 
     override fun getItemCount(): Int = scripts.size
-    
-    // Method to update data in the adapter
+
     fun updateData(newScripts: List<Script>) {
         scripts.clear()
         scripts.addAll(newScripts)

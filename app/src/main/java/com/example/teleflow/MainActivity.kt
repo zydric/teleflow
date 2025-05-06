@@ -36,13 +36,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
     
-    // Add these views for the custom drawer
     private lateinit var recordingsMenuItem: View
     private lateinit var settingsMenuItem: View
     private lateinit var aboutMenuItem: View
     private lateinit var logoutMenuItem: View
     
-    // Views for the user profile in drawer header
     private lateinit var userNameTextView: TextView
     private lateinit var userEmailTextView: TextView
     private lateinit var profileImageView: ImageView
@@ -51,86 +49,65 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        // Set up DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout)
         
-        // Set drawer listener to refresh profile image when opened
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                // Not needed
             }
 
             override fun onDrawerOpened(drawerView: View) {
-                // Refresh user data and update profile when drawer is opened
                 refreshUserData()
                 updateUserProfile()
             }
 
             override fun onDrawerClosed(drawerView: View) {
-                // Not needed
             }
 
             override fun onDrawerStateChanged(newState: Int) {
-                // Not needed
             }
         })
         
-        // Set up custom drawer menu item clicks
         setupCustomDrawer()
         
-        // Set up observer for user profile changes
         observeUserProfileChanges()
         
-        // Properly set up NavController using NavHostFragment
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         
-        // Set up bottom navigation
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         
-        // Define only HomeFragment as top-level destination (with hamburger menu)
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.homeFragment),
             drawerLayout
         )
         
-        // Set up ActionBar with NavController
         setupActionBarWithNavController(navController, appBarConfiguration)
         
-        // Create ActionBarDrawerToggle for the hamburger icon
         toggle = ActionBarDrawerToggle(
             this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         
-        // Change toggle color to white
         toggle.drawerArrowDrawable.color = resources.getColor(R.color.heading_color, theme)
         
-        // Listen for destination changes to configure drawer toggle visibility
         navController.addOnDestinationChangedListener(this)
         
-        // Set up bottom navigation with basic configuration
         bottomNavigationView.setupWithNavController(navController)
         
-        // Add a manual listener to ensure navigation works from any destination
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.homeFragment -> {
-                    // Navigate to home fragment
                     navController.navigate(R.id.homeFragment)
                     true
                 }
                 R.id.scriptsFragment -> {
-                    // Navigate to scripts fragment
                     navController.navigate(R.id.scriptsFragment)
                     true
                 }
                 R.id.profileFragment -> {
-                    // Navigate to profile fragment
                     navController.navigate(R.id.profileFragment)
                     true
                 }
                 R.id.nav_about -> {
-                    // Navigate to about developers fragment
                     navController.navigate(R.id.aboutDevelopersFragment)
                     true
                 }
@@ -139,7 +116,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
     
-    // Setup custom drawer navigation
     private fun setupCustomDrawer() {
         // Initialize menu items
         recordingsMenuItem = findViewById(R.id.nav_recordings_item)
@@ -147,19 +123,16 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         aboutMenuItem = findViewById(R.id.nav_about_item)
         logoutMenuItem = findViewById(R.id.nav_logout_item)
         
-        // Initialize header views
         userNameTextView = findViewById(R.id.user_name)
         userEmailTextView = findViewById(R.id.user_email)
         profileImageView = findViewById(R.id.profile_image)
         
-        // Set up header click to navigate to profile
         val headerLayout = findViewById<View>(R.id.nav_header)
         headerLayout.setOnClickListener {
             navController.navigate(R.id.profileFragment)
             drawerLayout.closeDrawer(GravityCompat.START)
         }
         
-        // Set click listeners for menu items
         recordingsMenuItem.setOnClickListener {
             navController.navigate(R.id.recordingsFragment)
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -176,52 +149,40 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
         
         logoutMenuItem.setOnClickListener {
-            // Handle logout functionality
             handleLogout()
             drawerLayout.closeDrawer(GravityCompat.START)
         }
         
-        // Update user profile in drawer header
         updateUserProfile()
     }
     
-    // Observe changes to user profile data
     private fun observeUserProfileChanges() {
         val authManager = (application as TeleFlowApplication).authManager
         authManager.currentUser.observe(this) { user ->
             if (user != null) {
-                // Update drawer header with new user data
                 userNameTextView.text = user.fullName
                 userEmailTextView.text = user.email
                 
-                // Load profile image
                 com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView, user.profileImagePath)
                 profileImageView.setPadding(0, 0, 0, 0)
             }
         }
     }
     
-    // Update user profile information in the drawer header
     private fun updateUserProfile() {
-        // Get user information from AuthManager
         val authManager = (application as TeleFlowApplication).authManager
         
-        // Force refresh user data from database first
         refreshUserData()
         
         val currentUser = authManager.currentUser.value
         
         if (currentUser != null) {
-            // Display actual user information
             userNameTextView.text = currentUser.fullName
             userEmailTextView.text = currentUser.email
             
-            // Load profile image using ImageUtils
             com.example.teleflow.utils.ImageUtils.loadProfileImage(this, profileImageView, currentUser.profileImagePath)
-            // Remove any padding that would be present for the icon
             profileImageView.setPadding(0, 0, 0, 0)
         } else {
-            // User not logged in - shouldn't happen but handle gracefully
             userNameTextView.text = "Guest User"
             userEmailTextView.text = "Not logged in"
             
@@ -230,30 +191,24 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
     
-    // Refresh user data from the database
     private fun refreshUserData() {
         val authManager = (application as TeleFlowApplication).authManager
         val userId = authManager.getCurrentUserId()
         if (userId != null) {
-            // Launch coroutine to refresh user data
             lifecycleScope.launch {
                 authManager.refreshUserData(userId)
             }
         }
     }
     
-    // Handle logout
     private fun handleLogout() {
-        // Show confirmation dialog before logging out
         AlertDialog.Builder(this, R.style.AlertDialogTheme)
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
-                // Get AuthManager and perform logout
                 val authManager = (application as TeleFlowApplication).authManager
                 authManager.logout()
                 
-                // Navigate to login fragment
                 navController.navigate(R.id.loginFragment)
             }
             .setNegativeButton("Cancel", null)
@@ -265,26 +220,21 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        // Set custom title based on the current destination
         when (destination.id) {
             R.id.loginFragment, R.id.registerFragment -> {
-                // Hide action bar and bottom navigation on authentication screens
                 supportActionBar?.hide()
                 bottomNavigationView.visibility = View.GONE
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
             R.id.homeFragment -> {
-                // Restore original theme if needed
                 setTheme(R.style.Theme_TeleFlow)
                 
                 supportActionBar?.title = "TeleFlow"
                 supportActionBar?.show()
                 bottomNavigationView.visibility = View.VISIBLE
                 
-                // Enable drawer toggle only on home fragment
                 if (!::toggle.isInitialized) return
                 
-                // Set up drawer toggle for home screen
                 drawerLayout.removeDrawerListener(toggle)
                 drawerLayout.addDrawerListener(toggle)
                 toggle.syncState()
@@ -310,11 +260,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 handleNonHomeDestination()
             }
             R.id.recordFragment -> {
-                // Apply NoActionBar theme for RecordFragment
                 supportActionBar?.hide()
                 bottomNavigationView.visibility = View.GONE
                 
-                // Enable immersive mode
                 enableImmersiveMode()
                 
                 handleNonHomeDestination()
@@ -348,15 +296,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
     
     private fun handleNonHomeDestination() {
-        // For non-home destinations, disable the drawer toggle and lock the drawer
         if (!::toggle.isInitialized) return
         
         drawerLayout.removeDrawerListener(toggle)
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(null) // Use default back arrow
+        supportActionBar?.setHomeAsUpIndicator(null)
         
-        // Set back arrow color to white (use navigation_icon)
         val navigationIconId = resources.getIdentifier("home", "id", "android")
         if (navigationIconId != 0) {
             val navigationIcon = findViewById<View>(navigationIconId)
@@ -369,36 +315,28 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
     
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation drawer item clicks
         when (item.itemId) {
             R.id.nav_recordings -> {
-                // Navigate to recordings fragment
                 navController.navigate(R.id.recordingsFragment)
             }
             R.id.nav_settings -> {
-                // Navigate to settings fragment
                 navController.navigate(R.id.settingsFragment)
             }
             R.id.nav_about -> {
-                // Navigate to about developers fragment
                 navController.navigate(R.id.aboutDevelopersFragment)
             }
         }
         
-        // Close the drawer
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks
         val currentDestination = navController.currentDestination?.id
         
         if (currentDestination == R.id.homeFragment && toggle.onOptionsItemSelected(item)) {
-            // Let the drawer toggle handle it (only on home screen)
             return true
         } else if (item.itemId == android.R.id.home) {
-            // Handle the back button press
             onBackPressed()
             return true
         }
@@ -411,11 +349,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
     
     override fun onBackPressed() {
-        // Close drawer if open, otherwise handle normal back button press
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            // Special handling for RecordFragment
             val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
                 ?.childFragmentManager
                 ?.fragments
@@ -426,10 +362,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             } else {
                 super.onBackPressed()
                 
-                // Check if we're returning from RecordFragment by looking at the current destination
                 val currentDestId = navController.currentDestination?.id
                 if (currentDestId != R.id.recordFragment) {
-                    // If we're no longer on the record fragment, disable immersive mode
                     disableImmersiveMode()
                 }
             }
@@ -437,16 +371,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
     
     private fun enableImmersiveMode() {
-        // For immersive fullscreen experience on RecordFragment
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For Android 11+ (API 30+)
             window.setDecorFitsSystemWindows(false)
             window.insetsController?.let {
                 it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
                 it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
         } else {
-            // For earlier Android versions
             @Suppress("DEPRECATION")
             window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -471,11 +402,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     
     override fun onDestroy() {
         super.onDestroy()
-        // Remove the destination changed listener
         navController.removeOnDestinationChangedListener(this)
     }
     
-    // Public method that can be called from fragments to refresh the user data in drawer
     fun refreshNavigationDrawerUserData() {
         refreshUserData()
         updateUserProfile()

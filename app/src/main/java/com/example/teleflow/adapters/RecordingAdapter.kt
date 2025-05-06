@@ -50,71 +50,60 @@ class RecordingAdapter(
 
     override fun onBindViewHolder(holder: RecordingViewHolder, position: Int) {
         val recording = recordings[position]
-        
-        // Set default title in case we can't load the script
+
         holder.titleTextView.text = "Recording"
-        
-        // Try to get the script title if possible
+
         if (lifecycleOwner != null) {
             getScript(recording.scriptId)?.observe(lifecycleOwner, Observer { script ->
                 holder.titleTextView.text = script?.title ?: "Unknown Script"
             })
         }
-        
-        // Format date with 12-hour clock format and AM/PM
+
         val dateFormat = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
         val formattedDate = dateFormat.format(Date(recording.date))
         holder.dateTextView.text = formattedDate
-        
-        // Load thumbnail
+
         loadThumbnail(recording.videoUri, holder.thumbnailImageView)
         
         holder.itemView.setOnClickListener {
             onItemClick(recording)
         }
-        
-        // Set up long-click listener if provided
+
         onItemLongClick?.let { longClickHandler ->
             holder.itemView.setOnLongClickListener { view ->
                 longClickHandler(recording, view)
-                true // Return true to indicate the long press was handled
+                true
             }
         }
     }
     
     private fun loadThumbnail(videoUri: String, imageView: ImageView) {
-        // Show placeholder while loading
         imageView.setImageResource(R.drawable.ic_video_placeholder)
-        
-        // Load thumbnail using our utility
+
         coroutineScope.launch {
             try {
                 val bitmap = ThumbnailUtils.getThumbnail(
                     imageView.context,
                     videoUri
                 )
-                
-                // Update UI with the thumbnail
+
                 bitmap?.let {
                     imageView.setImageBitmap(it)
                 }
             } catch (e: Exception) {
-                // Log error and keep placeholder
                 e.printStackTrace()
             }
         }
     }
 
     override fun getItemCount(): Int = recordings.size
-    
-    // Method to update data in the adapter
+
     fun updateData(newRecordings: List<Recording>) {
         recordings.clear()
         recordings.addAll(newRecordings)
         notifyDataSetChanged()
     }
-    
-    // Clear thumbnail cache when adapter is detached
+
     fun clearCache() {
         ThumbnailUtils.clearCache()
     }
